@@ -7,14 +7,14 @@ export const Header: React.FC = () => {
         aria-label="Menú" 
         className="text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 active:scale-95 transition-transform flex items-center justify-center"
       >
-        <span className="material-symbols-outlined font-headline-md text-headline-md">recycling</span>
+        <span className="material-symbols-outlined font-headline-md text-headline-md notranslate" translate="no">recycling</span>
       </button>
       <h1 className="font-headline-md text-headline-md font-bold text-primary tracking-tight">RevoLink</h1>
       <button 
         aria-label="Notificaciones" 
         className="text-on-surface-variant hover:bg-surface-container-high rounded-full p-2 active:scale-95 transition-transform flex items-center justify-center"
       >
-        <span className="material-symbols-outlined font-headline-md text-headline-md">notifications</span>
+        <span className="material-symbols-outlined font-headline-md text-headline-md notranslate" translate="no">notifications</span>
       </button>
     </header>
   );

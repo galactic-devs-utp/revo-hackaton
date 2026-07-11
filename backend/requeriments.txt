@@ -6,3 +6,8 @@ Werkzeug
 faiss-cpu
 supabase
 python-dotenv
+google-genai
+scikit-learn
+flask-cors
+pypdf
+reportlab

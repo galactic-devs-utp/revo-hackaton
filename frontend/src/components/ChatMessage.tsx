@@ -48,7 +48,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick
           <div className="flex items-center gap-2 mb-1">
             <div className="bg-secondary/10 p-1.5 rounded-full flex items-center justify-center">
               <span 
-                className="material-symbols-outlined text-secondary font-headline-md text-headline-md" 
+                className="material-symbols-outlined text-secondary font-headline-md text-headline-md notranslate" 
+                translate="no"
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
                 smart_toy
@@ -67,7 +68,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick
           {message.lawSnippet && (
             <div className="bg-surface-container-lowest/50 border border-outline-variant p-4 rounded-lg my-2 border-l-4 border-l-secondary shadow-sm relative overflow-hidden">
               <div className="absolute right-0 top-0 opacity-5 pointer-events-none">
-                <span className="material-symbols-outlined text-[64px]">gavel</span>
+                <span className="material-symbols-outlined text-[64px] notranslate" translate="no">gavel</span>
               </div>
               <h4 className="font-label-sm text-label-sm text-secondary mb-2 uppercase tracking-wider">
                 {message.lawSnippet.title}
@@ -85,7 +86,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick
               className="mt-3 w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-label-md text-label-md py-3 px-4 rounded-lg hover:bg-on-primary-fixed-variant active:scale-[0.98] transition-all shadow-md"
             >
               <span 
-                className="material-symbols-outlined" 
+                className="material-symbols-outlined notranslate" 
+                translate="no"
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
                 {message.actionButton.icon}

@@ -34,7 +34,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
             className="absolute right-2 p-2.5 bg-secondary-container text-on-secondary-container rounded-lg hover:bg-secondary hover:text-on-secondary transition-colors flex items-center justify-center shadow-sm"
           >
             <span 
-              className="material-symbols-outlined text-[20px]" 
+              className="material-symbols-outlined text-[20px] notranslate" 
+              translate="no"
               style={{ fontVariationSettings: "'FILL' 1" }}
             >
               send

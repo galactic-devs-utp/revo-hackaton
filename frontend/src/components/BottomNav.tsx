@@ -27,7 +27,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
               }`}
             >
               <span 
-                className="material-symbols-outlined mb-0.5 text-[24px]"
+                className="material-symbols-outlined mb-0.5 text-[24px] notranslate"
+                translate="no"
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
                 {tab.icon}
@@ -47,7 +48,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
                 : 'text-on-surface-variant hover:text-primary'
             }`}
           >
-            <span className="material-symbols-outlined mb-1 text-[24px]">{tab.icon}</span>
+            <span className="material-symbols-outlined mb-1 text-[24px] notranslate" translate="no">{tab.icon}</span>
             <span className="font-label-sm text-[10px]">{tab.label}</span>
           </button>
         );

@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   ]);
   const [isTyping, setIsTyping] = useState(false);
 
-  const handleSendMessage = (text: string) => {
+  const handleSendMessage = async (text: string) => {
     const timeString = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
     // Append user message
@@ -46,40 +46,44 @@ export const App: React.FC = () => {
     setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
 
-    // Simulate Terra AI response
-    setTimeout(() => {
-      let replyContent = 'Gracias por escribir. Como asistente de <strong>RevoLink</strong>, estoy aquí para ayudarte con la economía circular y la regulación de NFU.';
-      let snippet = undefined;
-      let button = undefined;
-
-      const cleanText = text.toLowerCase();
-      if (cleanText.includes('certificado') || cleanText.includes('descargar')) {
-        replyContent = '¡Por supuesto! Puedes descargar el certificado de valorización directamente aquí. Este documento acredita el ingreso de los neumáticos fuera de uso al sistema de reciclaje autorizado.';
-        button = {
-          label: 'Descargar Certificado PDF',
-          icon: 'download',
-          actionType: 'download_certificate'
-        };
-      } else if (cleanText.includes('norma') || cleanText.includes('ley') || cleanText.includes('malla')) {
-        replyContent = 'Nuestros productos de <strong>Caucho Granulado</strong> cumplen con los más altos estándares de calidad y apoyan el cumplimiento normativo ambiental.';
-        snippet = {
-          title: 'Regulación Ambiental',
-          text: 'Las empresas que incorporen materiales reciclados en sus compras públicas o privadas obtienen puntaje adicional en evaluaciones de sostenibilidad y certificaciones verdes.'
-        };
+    try {
+      const response = await fetch('http://localhost:5000/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: text })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al conectar con el backend de RAG');
       }
 
+      const data = await response.json();
+      
       const assistantMsg: Message = {
-        id: (Date.now() + 1).toString(),
+        id: Date.now().toString(),
         sender: 'assistant',
-        content: replyContent,
-        lawSnippet: snippet,
-        actionButton: button,
+        content: data.content,
+        lawSnippet: data.lawSnippet,
+        actionButton: data.actionButton,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-
+      
       setMessages(prev => [...prev, assistantMsg]);
+    } catch (error) {
+      console.error('Error fetching chat response:', error);
+      
+      const assistantMsg: Message = {
+        id: Date.now().toString(),
+        sender: 'assistant',
+        content: 'Lo siento, no he podido establecer conexión con el asistente Terra AI en el servidor. Por favor, verifica que el backend esté en ejecución.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages(prev => [...prev, assistantMsg]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const handleActionClick = (actionType: string) => {
