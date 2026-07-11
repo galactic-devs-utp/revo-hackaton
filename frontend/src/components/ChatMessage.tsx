@@ -44,17 +44,12 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick
         {/* Terra AI Ambient Glow */}
         <div className="absolute -top-10 -left-10 w-32 h-32 bg-secondary-container/30 rounded-full blur-2xl pointer-events-none group-hover:bg-secondary-container/40 transition-colors duration-500"></div>
         <div className="relative z-10 flex flex-col gap-sm">
-          {/* Header */}
           <div className="flex items-center gap-2 mb-1">
-            <div className="bg-secondary/10 p-1.5 rounded-full flex items-center justify-center">
-              <span 
-                className="material-symbols-outlined text-secondary font-headline-md text-headline-md notranslate" 
-                translate="no"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                smart_toy
-              </span>
-            </div>
+            <img 
+              src="/female_ai_avatar.png" 
+              alt="Terra AI" 
+              className="w-7 h-7 rounded-md object-cover border border-slate-100"
+            />
             <span className="font-label-md text-label-md text-on-surface">Terra AI</span>
           </div>
 

@@ -161,7 +161,11 @@ export const App: React.FC = () => {
             {/* Header */}
             <div className="bg-[#F7F7F2] border-b border-[#E7E7E1] px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#123524] notranslate" translate="no">smart_toy</span>
+                <img 
+                  src="/female_ai_avatar.png" 
+                  alt="Terra AI Avatar" 
+                  className="w-8 h-8 rounded-lg object-cover border border-[#E7E7E1]"
+                />
                 <div>
                   <h3 className="font-bold text-xs text-[#14181A]">Terra AI</h3>
                   <p className="text-[9px] text-[#2E9E5B] font-semibold">Online • Soporte Circular</p>
@@ -231,15 +235,21 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* Floating Action Button (FAB) */}
+        {/* Floating Action Button (FAB) - Square with Avatar */}
         <button
           onClick={() => setIsChatOpen(!isChatOpen)}
-          className="bg-[#123524] hover:bg-[#0B2A1B] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all duration-150 relative"
+          className="bg-white border-2 border-[#123524] w-18 h-18 rounded-2xl flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all duration-150 relative overflow-hidden group"
           aria-label="Abrir Asistente Terra AI"
         >
-          <span className="material-symbols-outlined text-[28px] notranslate" translate="no">
-            {isChatOpen ? 'close' : 'forum'}
-          </span>
+          {isChatOpen ? (
+            <span className="material-symbols-outlined text-[32px] text-[#123524] notranslate" translate="no">close</span>
+          ) : (
+            <img 
+              src="/female_ai_avatar.png" 
+              alt="Terra AI" 
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
+            />
+          )}
           {!isChatOpen && (
             <span className="absolute -top-1 -right-1 flex h-4 w-4">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C6E24C] opacity-75"></span>
