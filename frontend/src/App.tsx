@@ -137,6 +137,24 @@ export const App: React.FC = () => {
             </div>
           </div>
         );
+      case 'cart':
+        return (
+          <div className="pt-[88px] pb-[100px] px-margin-mobile md:px-margin-desktop md:max-w-3xl md:mx-auto min-h-screen flex flex-col justify-center items-center text-center gap-4 animate-fadeIn">
+            <div className="bg-white/80 border border-slate-100 p-8 rounded-2xl shadow-sm max-w-lg">
+              <span className="text-4xl">🛒</span>
+              <h2 className="text-xl font-bold text-[#123524] mt-4 tracking-tight">Carrito de Cotizaciones</h2>
+              <p className="text-sm text-[#5B6570] mt-2">
+                Para formalizar una orden o estimar costos, configure sus requerimientos volumétricos en el simulador B2B.
+              </p>
+              <button 
+                onClick={() => setActiveTab('store')} 
+                className="mt-6 bg-[#123524] text-white py-2.5 px-6 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-[#0B2A1B] transition-colors"
+              >
+                Volver al Simulador
+              </button>
+            </div>
+          </div>
+        );
       case 'store':
       default:
         return (

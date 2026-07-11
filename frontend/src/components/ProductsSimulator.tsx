@@ -267,15 +267,10 @@ export const ProductsSimulator: React.FC = () => {
         {/* SECCIÓN IZQUIERDA: Catálogo de Materiales */}
         <div className="lg:col-span-7 space-y-6">
           <div>
-            <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#123524] bg-[#C6E24C] px-2.5 py-1 rounded-full">
-              Catálogo Homologado
-            </span>
+            
             <h2 className="text-2xl font-extrabold tracking-tight text-[#14181A] mt-3">
-              Suministro Industrial Circular
-            </h2>
-            <p className="text-sm text-[#5B6570] mt-1">
-              Seleccione una materia prima homologada para proyectar el volumen operativo y analizar la viabilidad financiera.
-            </p>
+Catálogo Homologado            </h2>
+            
           </div>
 
           {/* GRID DE TARJETAS DE PRODUCTOS */}

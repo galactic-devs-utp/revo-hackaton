@@ -9,7 +9,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
   const tabs = [
     { id: 'dashboard', label: 'Inicio', icon: 'dashboard' },
     { id: 'store', label: 'Tienda', icon: 'storefront' },
-    { id: 'terra', label: 'Terra', icon: 'smart_toy' },
+    { id: 'cart', label: 'Carrito', icon: 'shopping_cart' },
     { id: 'profile', label: 'Perfil', icon: 'person' },
   ];
 
@@ -17,7 +17,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab })
     <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface shadow-[0_-4px_16px_rgba(0,0,0,0.05)] rounded-t-xl md:hidden border-t border-outline-variant/30">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
-        if (tab.id === 'terra') {
+        if (tab.id === 'cart') {
           return (
             <button
               key={tab.id}
