@@ -1,0 +1,8 @@
+Flask>=2.0.0
+Flask-SQLAlchemy>=3.0.2
+SQLAlchemy>=2.0.0
+psycopg2-binary>=2.9.9
+Werkzeug
+faiss-cpu
+supabase
+python-dotenv
