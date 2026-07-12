@@ -48,6 +48,9 @@ export const Dashboard: React.FC = () => {
     const now = new Date();
     const clickDateTime = `${now.toLocaleDateString()} a las ${now.toLocaleTimeString()}`;
 
+    const confirmMessage = `¿Desea iniciar la búsqueda y escaneo de nuevos pliegos técnicos en el SEACE?\n\nFecha y hora de solicitud: ${clickDateTime}`;
+    if (!confirm(confirmMessage)) return;
+
     setIsScanning(true);
     fetch('http://localhost:5000/api/scrape', {
       method: 'POST'
