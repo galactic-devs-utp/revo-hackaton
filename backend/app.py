@@ -344,6 +344,14 @@ def health():
 @app.route("/api/opportunities", methods=["GET"])
 def get_opportunities():
     try:
+        # Query Supabase table first
+        response = supabase.table("seace_opportunities").select("*").order("id", desc=False).execute()
+        if response.data is not None:
+            return jsonify(response.data)
+    except Exception as e:
+        print(f"Supabase GET opportunities error: {e}. Falling back to local JSON.")
+
+    try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         json_path = os.path.join(current_dir, "data", "seace_opportunities.json")
         if os.path.exists(json_path):
