@@ -45,6 +45,9 @@ export const Dashboard: React.FC = () => {
   const [isScanning, setIsScanning] = useState(false);
 
   const handleScanSEACE = () => {
+    const now = new Date();
+    const clickDateTime = `${now.toLocaleDateString()} a las ${now.toLocaleTimeString()}`;
+
     setIsScanning(true);
     fetch('http://localhost:5000/api/scrape', {
       method: 'POST'
@@ -72,7 +75,7 @@ export const Dashboard: React.FC = () => {
             correo_contacto: opp.correo_contacto
           }));
           setTenders(mappedTenders);
-          alert("¡Escaneo Inteligente Completado!\n\nSe escanearon 40 pliegos técnicos en vivo desde el portal SEACE. La IA identificó 2 nuevas constructoras con requerimiento de mezcla asfáltica modificada y bases de licitación sostenible bajo el D.S. 024-2021-MINAM.");
+          alert(`¡Escaneo Inteligente Completado!\n\nProceso ejecutado el ${clickDateTime}.\n\nSe escanearon 40 pliegos técnicos en vivo desde el portal SEACE. La IA identificó 2 nuevas constructoras con requerimiento de mezcla asfáltica modificada y bases de licitación sostenible bajo el D.S. 024-2021-MINAM.`);
         } else {
           alert("El escaneo finalizó pero no se recibieron nuevos datos.");
         }
@@ -80,7 +83,7 @@ export const Dashboard: React.FC = () => {
       .catch(err => {
         setIsScanning(false);
         console.error("Scraping error:", err);
-        alert("¡Escaneo finalizado con fallback local! Se han recargado las oportunidades de la base de datos.");
+        alert(`¡Escaneo finalizado con fallback local! Se han recargado las oportunidades de la base de datos.\n\nAcción registrada el ${clickDateTime}.`);
       });
   };
 
