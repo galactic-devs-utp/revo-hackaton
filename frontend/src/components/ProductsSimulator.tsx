@@ -106,17 +106,24 @@ const LOCAL_PRODUCTS_CONFIG: Record<string, ProductLocalConfig> = {
 
 const PRODUCT_APPLICATIONS: Record<string, { label: string; image: string }[]> = {
   "Caucho Granulado Fino": [
-    { label: "Pistas y Asfalto Ecológico", image: "https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?auto=format&fit=crop&w=400&q=80" },
-    { label: "Gras Sintético y Campos", image: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=400&q=80" }
+    { label: "Pistas y Asfalto Ecológico", image: "https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?auto=format&fit=crop&w=800&q=80" },
+    { label: "Gras Sintético y Campos", image: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80" },
+    { label: "Baldosas y Pisos de Seguridad Amortiguantes", image: "https://images.unsplash.com/photo-1520038410233-7141be7e6f97?auto=format&fit=crop&w=800&q=80" }
   ],
   "Aceite Pirolítico Industrial": [
-    { label: "Hornos y Calderas Industriales", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80" }
+    { label: "Hornos y Calderas Industriales", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80" },
+    { label: "Destilación de Hidrocarburos", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80" },
+    { label: "Suministro Energético Circular", image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=800&q=80" }
   ],
   "Negro de Humo Recuperado (rCB)": [
-    { label: "Refuerzo de Caucho y Plásticos", image: "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=400&q=80" }
+    { label: "Refuerzo de Caucho y Plásticos", image: "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=800&q=80" },
+    { label: "Masterbatch de Tinta e Inyección", image: "https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80" },
+    { label: "Manufactura Industrial Sostenible", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" }
   ],
   "Acero de Llanta Siderúrgico": [
-    { label: "Fibras de Refuerzo para Concreto", image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80" }
+    { label: "Fibras de Refuerzo para Concreto", image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80" },
+    { label: "Fundiciones Metálicas Especiales", image: "https://images.unsplash.com/photo-1534224039826-c7a0dea0e66a?auto=format&fit=crop&w=800&q=80" },
+    { label: "Carga Ferrosa Estructurada", image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80" }
   ]
 };
 
@@ -138,6 +145,8 @@ export const ProductsSimulator: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number>(1);
   const [maxStep, setMaxStep] = useState<number>(1);
   const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [isTechnicalSheetOpen, setIsTechnicalSheetOpen] = useState<boolean>(false);
 
   // Form states
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
@@ -200,6 +209,8 @@ export const ProductsSimulator: React.FC = () => {
     }
     setActiveStep(1);
     setMaxStep(1);
+    setCurrentSlide(0);
+    setIsTechnicalSheetOpen(false);
     setIsDetailOpen(true);
   };
 
@@ -407,8 +418,16 @@ export const ProductsSimulator: React.FC = () => {
   const renderDetailView = () => {
     if (!selectedProduct || !selectedProductConfig) return null;
 
-    const bannerImage = PRODUCT_APPLICATIONS[selectedProduct.name]?.[0]?.image || selectedProduct.image_path;
-    const bannerLabel = PRODUCT_APPLICATIONS[selectedProduct.name]?.[0]?.label || selectedProduct.name;
+    const slides = PRODUCT_APPLICATIONS[selectedProduct.name] || [];
+    const currentApp = slides[currentSlide] || { label: selectedProduct.name, image: selectedProduct.image_path };
+
+    const handlePrevSlide = () => {
+      setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    };
+
+    const handleNextSlide = () => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    };
 
     return (
       <div className="animate-fadeIn max-w-7xl mx-auto space-y-6">
@@ -422,85 +441,114 @@ export const ProductsSimulator: React.FC = () => {
           </button>
         </div>
 
-        {/* BANNER SUPERIOR */}
-        <div className="relative h-56 sm:h-72 md:h-80 rounded-2xl overflow-hidden shadow-md">
+        {/* BANNER CARUSEL SUPERIOR */}
+        <div className="relative h-64 sm:h-80 rounded-2xl overflow-hidden shadow-lg group">
           <img
-            src={bannerImage}
-            alt={bannerLabel}
-            className="w-full h-full object-cover"
+            src={currentApp.image}
+            alt={currentApp.label}
+            className="w-full h-full object-cover transition-all duration-500 ease-in-out"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10 flex flex-col justify-end p-6 sm:p-8 text-white">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10 flex flex-col justify-end p-6 sm:p-8 text-white">
             <span className="text-[10px] font-bold uppercase tracking-wider bg-[#C6E24C] text-[#123524] px-2.5 py-1 rounded-full w-max">
               {selectedProductConfig.category}
             </span>
             <h2 className="text-xl sm:text-3xl font-extrabold tracking-tight mt-2.5">
-              Aplicación: {bannerLabel}
+              Aplicación: {currentApp.label}
             </h2>
             <p className="text-[11px] sm:text-xs text-slate-200 mt-1 max-w-xl">
-              Transformando neumáticos fuera de uso en soluciones circulares e infraestructura industrial.
+              Este residuo de llanta se valoriza y convierte en: <strong className="text-[#C6E24C]">{currentApp.label}</strong>.
             </p>
+          </div>
+
+          {/* FLECHAS DE NAVEGACIÓN */}
+          {slides.length > 1 && (
+            <>
+              <button
+                onClick={handlePrevSlide}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-[#123524] text-white w-9 h-9 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
+                aria-label="Anterior aplicación"
+              >
+                ◀
+              </button>
+              <button
+                onClick={handleNextSlide}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-[#123524] text-white w-9 h-9 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
+                aria-label="Siguiente aplicación"
+              >
+                ▶
+              </button>
+            </>
+          )}
+
+          {/* PUNTOS INDICADORES */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  idx === currentSlide ? 'bg-[#C6E24C] w-4' : 'bg-white/55 hover:bg-white'
+                }`}
+                aria-label={`Ir a slide ${idx + 1}`}
+              />
+            ))}
           </div>
         </div>
 
         {/* GRID DE DOS COLUMNAS */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
-          {/* COLUMNA IZQUIERDA: Especificaciones y Soluciones */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="bg-white border border-[#E7E7E1] rounded-2xl p-6 shadow-sm space-y-4">
-              <div>
-                <span className="text-[9px] font-bold uppercase tracking-wider text-[#123524] bg-[#E4F5E7] px-2 py-0.5 rounded-full">
-                  Ficha Técnica Comercial
-                </span>
-                <h3 className="text-xl font-bold text-[#14181A] mt-2">
-                  {selectedProduct.name}
-                </h3>
-                <p className="text-xs text-[#5B6570] mt-1.5 leading-relaxed">
-                  {selectedProduct.description}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 pt-4 text-xs">
-                <div className="bg-[#F7F7F2] p-3 rounded-lg border border-[#E7E7E1]">
-                  <strong className="text-[#14181A] block mb-1">Normativa Técnica</strong>
-                  <p className="text-[#5B6570] text-[11px]">Homologado bajo estándares B2B e indicadores del MINAM.</p>
-                </div>
-                <div className="bg-[#F7F7F2] p-3 rounded-lg border border-[#E7E7E1]">
-                  <strong className="text-[#14181A] block mb-1">Uso Recomendado</strong>
-                  <p className="text-[#5B6570] text-[11px]">{selectedProduct.usage}</p>
-                </div>
-              </div>
-
-              <div className="border-t border-slate-100 pt-4">
-                <strong className="text-xs font-bold text-[#14181A] block mb-2">Ventajas Técnicas y Propiedades:</strong>
-                <ul className="list-disc pl-4 space-y-1 text-xs text-[#5B6570]">
-                  {selectedProduct.characteristics.map((char, index) => (
-                    <li key={index}>{char}</li>
-                  ))}
-                </ul>
-              </div>
+          {/* COLUMNA IZQUIERDA: Especificaciones y Ficha Técnica Desplegable */}
+          <div className="lg:col-span-7 space-y-4">
+            {/* Descripción General */}
+            <div className="bg-white border border-[#E7E7E1] rounded-2xl p-6 shadow-sm">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-[#123524] bg-[#E4F5E7] px-2 py-0.5 rounded-full">
+                Descripción Comercial
+              </span>
+              <h3 className="text-lg font-bold text-[#14181A] mt-2">
+                {selectedProduct.name}
+              </h3>
+              <p className="text-xs text-[#5B6570] mt-1.5 leading-relaxed">
+                {selectedProduct.description}
+              </p>
             </div>
 
-            {/* APLICACIONES DE ECONOMÍA CIRCULAR */}
-            <div className="bg-white border border-[#E7E7E1] rounded-2xl p-6 shadow-sm space-y-4">
-              <h4 className="text-xs font-bold text-[#14181A] uppercase tracking-wider">
-                Galería de Conversiones y Casos de Uso
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {(PRODUCT_APPLICATIONS[selectedProduct.name] || []).map((app, idx) => (
-                  <div key={idx} className="relative rounded-xl overflow-hidden border border-slate-200/50 group h-36">
-                    <img 
-                      src={app.image} 
-                      alt={app.label} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
-                      <span className="text-xs font-bold text-white leading-tight">
-                        {app.label}
-                      </span>
+            {/* Ficha Técnica Comercial Desplegable (Acordeón Oculto por Defecto) */}
+            <div className="bg-white border border-[#E7E7E1] rounded-2xl overflow-hidden shadow-sm">
+              <button
+                onClick={() => setIsTechnicalSheetOpen(!isTechnicalSheetOpen)}
+                className="w-full px-6 py-4 text-left font-bold text-xs text-[#14181A] bg-[#F7F7F2] hover:bg-slate-50 border-b border-[#E7E7E1] flex justify-between items-center transition-colors outline-none"
+              >
+                <span className="flex items-center gap-2">
+                  📋 Ficha Técnica Comercial (Especificaciones)
+                </span>
+                <span className="text-[#123524] text-sm">
+                  {isTechnicalSheetOpen ? '▲ Ocultar' : '▼ Mostrar'}
+                </span>
+              </button>
+
+              {isTechnicalSheetOpen && (
+                <div className="p-6 space-y-4 animate-fadeIn text-xs text-[#5B6570]">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-slate-100 pb-4">
+                    <div className="bg-[#F7F7F2] p-3 rounded-lg border border-[#E7E7E1]">
+                      <strong className="text-[#14181A] block mb-1">Normativa Técnica</strong>
+                      <p className="text-[11px]">Homologado bajo estándares B2B e indicadores del MINAM (D.S. 024-2021-MINAM).</p>
+                    </div>
+                    <div className="bg-[#F7F7F2] p-3 rounded-lg border border-[#E7E7E1]">
+                      <strong className="text-[#14181A] block mb-1">Uso Recomendado</strong>
+                      <p className="text-[11px]">{selectedProduct.usage}</p>
                     </div>
                   </div>
-                ))}
-              </div>
+
+                  <div>
+                    <strong className="text-xs font-bold text-[#14181A] block mb-2">Ventajas Técnicas y Propiedades:</strong>
+                    <ul className="list-disc pl-4 space-y-1">
+                      {selectedProduct.characteristics.map((char, index) => (
+                        <li key={index}>{char}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
