@@ -39,7 +39,7 @@ export const Dashboard: React.FC = () => {
     }
   };
 
-  const handleUpdateProduct = async (productId: string, field: 'price' | 'stock', value: number) => {
+  const handleUpdateProduct = async (productId: string, field: string, value: any) => {
     try {
       const { error } = await supabase
         .from("products")
@@ -335,7 +335,7 @@ export const Dashboard: React.FC = () => {
                                 handleUpdateProduct(prod.id, 'price', newPrice);
                               }
                             }}
-                            className="border border-emerald-500 hover:bg-emerald-50 text-emerald-600 px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-all"
+                            className="border border-emerald-500 hover:bg-emerald-50 text-emerald-600 px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-all whitespace-nowrap"
                           >
                             Editar Precio
                           </button>
@@ -346,9 +346,20 @@ export const Dashboard: React.FC = () => {
                                 handleUpdateProduct(prod.id, 'stock', newStock);
                               }
                             }}
-                            className="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-all shadow-sm"
+                            className="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-all shadow-sm whitespace-nowrap"
                           >
                             Ajustar Stock
+                          </button>
+                          <button
+                            onClick={() => {
+                              const newImg = prompt(`Ingrese la URL de la nueva imagen para ${prod.name}:`, prod.image_path || "");
+                              if (newImg !== null && newImg.trim() !== "") {
+                                handleUpdateProduct(prod.id, 'image_path', newImg.trim());
+                              }
+                            }}
+                            className="border border-slate-300 hover:bg-slate-50 text-slate-700 px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-all whitespace-nowrap"
+                          >
+                            Cambiar Imagen
                           </button>
                         </div>
                       </td>
