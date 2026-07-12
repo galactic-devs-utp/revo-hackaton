@@ -13,6 +13,7 @@ export interface Tender {
   fecha_limite: string;
   presupuesto?: string;
   producto_afin?: string;
+  correo_contacto?: string;
 }
 
 export const Dashboard: React.FC = () => {
@@ -137,10 +138,25 @@ export const Dashboard: React.FC = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/tenders');
+      const res = await fetch('http://localhost:5000/api/opportunities');
       if (res.ok) {
         const data = await res.json();
-        setTenders(data.tenders);
+        const mappedTenders: Tender[] = data.map((opp: any) => ({
+          id: String(opp.id),
+          proyecto: opp.objeto,
+          contratista: opp.entidad,
+          demanda: Math.round(opp.monto / 10000) || 50,
+          match: opp.puntaje_sostenible * 6 + 10,
+          estado: opp.estado === 'Adjudicado' ? 'cerrado' : 'cotizar',
+          ubicacion: 'Lima, Perú',
+          fecha_limite: opp.fecha_publicacion,
+          presupuesto: `S/. ${opp.monto.toLocaleString()}`,
+          producto_afin: opp.objeto.toLowerCase().includes('asfal') ? 'Mezcla Asfáltica (Caucho)' :
+                         opp.objeto.toLowerCase().includes('piso') || opp.objeto.toLowerCase().includes('baldosa') ? 'Pisos de Caucho' :
+                         opp.objeto.toLowerCase().includes('aceite') ? 'Aceite de Pirólisis' : 'Acero Reciclado',
+          correo_contacto: opp.correo_contacto
+        }));
+        setTenders(mappedTenders);
       }
     } catch (error) {
       loadMockData();
@@ -325,13 +341,23 @@ export const Dashboard: React.FC = () => {
                             <span className="material-symbols-outlined text-[16px] notranslate" translate="no">delete</span>
                           </button>
                           {tender.estado === 'cotizar' ? (
-                            <button
-                              onClick={() => handleCotizar(tender.id)}
-                              className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
-                            >
-                              <span className="material-symbols-outlined text-[14px] notranslate" translate="no">send</span>
-                              Ofrecer Suministro
-                            </button>
+                            <div className="flex gap-1.5">
+                              <button
+                                onClick={() => handleCotizar(tender.id)}
+                                className="flex items-center gap-1 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+                              >
+                                <span className="material-symbols-outlined text-[13px] notranslate" translate="no">send</span>
+                                Ofrecer
+                              </button>
+                              {tender.correo_contacto && (
+                                <a
+                                  href={`mailto:${tender.correo_contacto}?subject=Propuesta de Suministro Sostenible - RevoLink&body=Estimados señores de ${tender.contratista},%0D%0A%0D%0ANos ponemos en contacto en relación a su requerimiento de: "${tender.proyecto}".%0D%0A%0D%0AContamos con la disponibilidad de suministrar insumos ecológicos homologados (caucho granulado, acero siderúrgico y combustibles pirolíticos) que otorgan puntaje adicional por cumplimiento del D.S. 024-2021-MINAM.%0D%0A%0D%0AQuedamos atentos a sus comentarios.%0D%0A%0D%0AAtentamente,%0D%0AArea de Suministro B2B - RevoLink`}
+                                  className="bg-[#9EB93A] hover:bg-[#86A02E] text-[#123524] px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-colors flex items-center justify-center whitespace-nowrap"
+                                >
+                                  Contactar
+                                </a>
+                              )}
+                            </div>
                           ) : tender.estado === 'pendiente' ? (
                             <span className="flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">
                               <span className="material-symbols-outlined text-[14px] notranslate" translate="no">schedule</span>
