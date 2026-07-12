@@ -120,7 +120,7 @@ export const App: React.FC = () => {
       const assistantMsg: Message = {
         id: Date.now().toString(),
         sender: 'assistant',
-        content: 'Lo siento, no he podido establecer conexión con el asistente Terra AI en el servidor. Por favor, verifica que el backend esté en ejecución.',
+        content: 'Lo siento, no he podido establecer conexión con el asistente SofiA en el servidor. Por favor, verifica que el backend esté en ejecución.',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, assistantMsg]);
@@ -366,11 +366,11 @@ export const App: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <img 
                     src="/female_ai_avatar.png" 
-                    alt="Terra AI Avatar" 
+                    alt="SofiA Avatar" 
                     className="w-8 h-8 rounded-lg object-cover border border-[#E7E7E1]"
                   />
                   <div>
-                    <h3 className="font-bold text-xs text-[#14181A]">Terra AI</h3>
+                    <h3 className="font-bold text-xs text-[#14181A]">SofiA</h3>
                     <p className="text-[9px] text-[#2E9E5B] font-semibold">Online • Soporte Circular</p>
                   </div>
                 </div>
@@ -424,7 +424,7 @@ export const App: React.FC = () => {
                   <input 
                     name="message"
                     type="text"
-                    placeholder="Pregúntale a Terra..."
+                    placeholder="Pregúntale a SofiA..."
                     className="flex-grow bg-transparent border-none py-1.5 px-2.5 text-xs text-[#14181A] focus:outline-none placeholder:text-[#96A0A8]"
                   />
                   <button 
@@ -442,14 +442,14 @@ export const App: React.FC = () => {
           <button
             onClick={() => setIsChatOpen(!isChatOpen)}
             className="bg-white border-2 border-[#123524] w-18 h-18 rounded-2xl flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all duration-150 relative overflow-hidden group"
-            aria-label="Abrir Asistente Terra AI"
+            aria-label="Abrir Asistente SofiA"
           >
             {isChatOpen ? (
               <span className="material-symbols-outlined text-[32px] text-[#123524] notranslate" translate="no">close</span>
             ) : (
               <img 
                 src="/female_ai_avatar.png" 
-                alt="Terra AI" 
+                alt="SofiA" 
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
               />
             )}

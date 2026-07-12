@@ -41,16 +41,16 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick
   return (
     <div className="flex justify-start w-full animate-fadeInLong">
       <div className="bg-white/80 backdrop-blur-[20px] border border-white/40 shadow-[0_12px_40px_-12px_rgba(0,24,16,0.08)] text-on-surface rounded-xl rounded-tl-none p-5 max-w-[95%] md:max-w-[85%] relative overflow-hidden group">
-        {/* Terra AI Ambient Glow */}
+        {/* SofiA Ambient Glow */}
         <div className="absolute -top-10 -left-10 w-32 h-32 bg-secondary-container/30 rounded-full blur-2xl pointer-events-none group-hover:bg-secondary-container/40 transition-colors duration-500"></div>
         <div className="relative z-10 flex flex-col gap-sm">
           <div className="flex items-center gap-2 mb-1">
             <img 
               src="/female_ai_avatar.png" 
-              alt="Terra AI" 
+              alt="SofiA" 
               className="w-7 h-7 rounded-md object-cover border border-slate-100"
             />
-            <span className="font-label-md text-label-md text-on-surface">Terra AI</span>
+            <span className="font-label-md text-label-md text-on-surface">SofiA</span>
           </div>
 
           {/* Content */}

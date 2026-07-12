@@ -479,9 +479,9 @@ export const Dashboard: React.FC = () => {
         <div className="px-6 max-w-7xl mx-auto w-full space-y-6">
           <div className="bg-slate-800 rounded-xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h2 className="text-white font-semibold text-sm">Inventario de Productos en Tiempo Real (Supabase)</h2>
+              <h2 className="text-white font-semibold text-sm">Inventario de Productos </h2>
               <p className="text-gray-400 text-xs mt-1">
-                Administre el catálogo de insumos circulares de RevoLink. Los cambios impactan directamente a la tienda del cliente.
+                Catálogo de insumos circulares de RevoLink. 
               </p>
             </div>
             <button

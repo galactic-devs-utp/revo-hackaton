@@ -255,7 +255,7 @@ def generate_local_response(query, best_product, best_regulation):
         }, action
 
     # 3. Default fallback
-    content = "Hola, soy **Terra AI**, asistente virtual de **RevoLink**. Puedo ayudarte a responder consultas técnicas sobre economía circular, neumáticos fuera de uso (NFU) y nuestros productos ecológicos (Mulch de Caucho y Aceite de Pirólisis) bajo la normativa peruana D.S. 024-2021-MINAM."
+    content = "Hola, soy **SofiA**, asistente virtual de **RevoLink**. Puedo ayudarte a responder consultas técnicas sobre economía circular, neumáticos fuera de uso (NFU) y nuestros productos ecológicos (Mulch de Caucho y Aceite de Pirólisis) bajo la normativa peruana D.S. 024-2021-MINAM."
     return content, None, None
 
 def generate_gemini_response(query, best_product, best_regulation):
@@ -267,14 +267,14 @@ def generate_gemini_response(query, best_product, best_regulation):
         context += f"Regulación Ambiental Peruana Relevante:\n- Título: {best_regulation['title']}\n- Nombre: {best_regulation['name']}\n- Resumen: {best_regulation['summary']}\n- Extracto: {best_regulation['snippet']}\n\n"
 
     system_prompt = (
-        "Eres Terra AI, el asistente virtual experto en economía circular y gestión de neumáticos fuera de uso (NFU) de la plataforma RevoLink.\n"
+        "Eres SofiA, el asistente virtual experto en economía circular y gestión de neumáticos fuera de uso (NFU) de la plataforma RevoLink.\n"
         "Debes responder de manera profesional, clara y concisa en español, utilizando formato markdown.\n"
         "Bajo ninguna circunstancia inventes información técnica o de precios. Si no encuentras la información en el contexto provisto, indícalo educadamente.\n"
         "Si el usuario pregunta sobre cómo comprar, cotizar o descargar certificados, incluye una indicación clara en tu respuesta de que hay un botón disponible.\n"
         "Usa etiquetas HTML fuertes (strong) para destacar términos clave de manera estética."
     )
 
-    prompt = f"Contexto:\n{context}\n\nPregunta del usuario:\n{query}\n\nRespuesta de Terra AI:"
+    prompt = f"Contexto:\n{context}\n\nPregunta del usuario:\n{query}\n\nRespuesta de SofiA:"
 
     try:
         response = client.models.generate_content(

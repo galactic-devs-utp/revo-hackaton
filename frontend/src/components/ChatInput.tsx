@@ -26,7 +26,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className="w-full bg-transparent border-none py-4 pl-4 pr-14 font-body-md text-body-md text-on-surface focus:ring-0 placeholder:text-outline-variant focus:outline-none" 
-            placeholder="Pregúntale cualquier cosa a Terra..." 
+            placeholder="Pregúntale cualquier cosa a SofiA..." 
             type="text"
           />
           <button 
@@ -44,7 +44,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
         </div>
         <div className="text-center mt-2">
           <span className="font-label-sm text-[10px] text-on-surface-variant/60">
-            Terra AI puede cometer errores. Verifique la información regulatoria crítica.
+            SofiA puede cometer errores. Verifique la información regulatoria crítica.
           </span>
         </div>
       </div>
