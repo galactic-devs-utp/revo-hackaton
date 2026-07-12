@@ -20,6 +20,21 @@ interface Opportunity {
   correo_contacto?: string;
 }
 
+const ADMIN_PRESET_ANSWERS: Record<string, { content: string }> = {
+  "¿Cómo funciona el flujo de aprobación?": {
+    content: "El flujo consta de 3 estados:<br/>1. <strong>Pendiente:</strong> La cotización ha sido enviada por el cliente y está a la espera de revisión.<br/>2. <strong>Aprobado:</strong> El administrador valida los datos y aprueba la venta.<br/>3. <strong>Despachado:</strong> El producto ha salido de la planta y el ciclo de valorización (crédito ambiental) concluye."
+  },
+  "¿Qué es el D.S. 024-2021-MINAM?": {
+    content: "Es el <strong>Régimen Especial de Gestión de Neumáticos Fuera de Uso (NFU)</strong> en el Perú. Obliga a las empresas a reciclar y valorizar neumáticos. RevoLink ayuda a cumplir esta ley entregando certificados oficiales de valorización material."
+  },
+  "¿Cuáles son los productos con stock bajo?": {
+    content: "El inventario actual reporta:<br/>- <strong>Negro de Humo (rCB):</strong> 12.5 Tons (Crítico)<br/>- <strong>Caucho Granulado Fino:</strong> 45.2 Tons (Estable)<br/>- <strong>Aceite Pirolítico:</strong> Pre-orden habilitada."
+  },
+  "¿Cómo se calcula el Match AI?": {
+    content: "Se calcula cruzando el <strong>Puntaje de Sostenibilidad</strong> de la licitación con la oferta de insumos ecológicos de RevoLink. A mayor requerimiento de valorización de residuos, mayor es el porcentaje de compatibilidad (Match)."
+  }
+};
+
 export const App: React.FC = () => {
   // Start on products tab by default or auth selection
   const [activeTab, setActiveTab] = useState('store');
@@ -73,6 +88,25 @@ export const App: React.FC = () => {
     
     setMessages(prev => [...prev, userMsg]);
     setIsTyping(true);
+
+    if (userRole === 'admin') {
+      setTimeout(() => {
+        setIsTyping(false);
+        const preset = ADMIN_PRESET_ANSWERS[text];
+        const replyContent = preset 
+          ? preset.content 
+          : "Hola, para optimizar el flujo administrativo, por favor seleccione una de las tarjetas de consulta rápida de SofiA.";
+        
+        const assistantMsg: Message = {
+          id: Date.now().toString(),
+          sender: 'assistant',
+          content: replyContent,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setMessages(prev => [...prev, assistantMsg]);
+      }, 1000);
+      return;
+    }
 
     try {
       const response = await fetch('http://localhost:5000/api/chat', {
@@ -394,14 +428,26 @@ export const App: React.FC = () => {
                 {messages.length === 1 && (
                   <div className="space-y-2 mt-2 animate-fadeIn">
                     <div className="text-center py-1">
-                      <span className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-0.5">¿Quieres ayuda para empezar?</span>
-                      <span className="block text-[9px] text-[#96A0A8]">Cuéntenos un poco lo que busca.</span>
+                      <span className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-0.5">
+                        {userRole === 'admin' ? 'Asistente de Operaciones' : '¿Quieres ayuda para empezar?'}
+                      </span>
+                      <span className="block text-[9px] text-[#96A0A8]">
+                        {userRole === 'admin' ? 'Consultas rápidas de la consola sin consumo de tokens.' : 'Cuéntenos un poco lo que busca.'}
+                      </span>
                     </div>
-                    {[
-                      "Quiero obtener información sobre los productos y la ley de neumáticos (D.S. 024-2021-MINAM)",
-                      "¿Cuáles son los precios del Caucho Reciclado y Aceite de Pirólisis?",
-                      "¿Cómo RevoLink me ayuda a obtener puntaje extra en licitaciones del SEACE?"
-                    ].map((text, idx) => (
+                    {(userRole === 'admin' 
+                      ? [
+                          "¿Cómo funciona el flujo de aprobación?",
+                          "¿Qué es el D.S. 024-2021-MINAM?",
+                          "¿Cuáles son los productos con stock bajo?",
+                          "¿Cómo se calcula el Match AI?"
+                        ]
+                      : [
+                          "Quiero obtener información sobre los productos y la ley de neumáticos (D.S. 024-2021-MINAM)",
+                          "¿Cuáles son los precios del Caucho Reciclado y Aceite de Pirólisis?",
+                          "¿Cómo RevoLink me ayuda a obtener puntaje extra en licitaciones del SEACE?"
+                        ]
+                    ).map((text, idx) => (
                       <button
                         key={idx}
                         onClick={() => handleSendMessage(text)}
