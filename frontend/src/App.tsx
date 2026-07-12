@@ -44,25 +44,10 @@ export const App: React.FC = () => {
   }, []);
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: '1',
-      sender: 'user',
-      content: '¿Cómo ayuda este material a cumplir con el D.S. 024-2021-MINAM?',
-      timestamp: '10:42 AM'
-    },
-    {
-      id: '2',
+      id: 'welcome',
       sender: 'assistant',
-      content: 'El <strong>Caucho Granulado Malla 40</strong> contribuye directamente a las metas de valorización de NFU (Neumáticos Fuera de Uso) establecidas en el D.S. 024-2021-MINAM.',
-      lawSnippet: {
-        title: 'Extracto Legal',
-        text: 'Los productores de neumáticos están obligados a garantizar la recolección y valorización de los NFU en los porcentajes anuales establecidos. El uso de material granulado reciclado en procesos productivos es reconocido como valorización material.'
-      },
-      actionButton: {
-        label: 'Descargar Certificado',
-        icon: 'download',
-        actionType: 'download_certificate'
-      },
-      timestamp: '10:42 AM'
+      content: 'Hola, soy **SofiA**, el asistente virtual de **RevoLink**. Puedo ayudarte con consultas técnicas y regulatorias (D.S. 024-2021-MINAM) de economía circular de neumáticos fuera de uso.',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
@@ -391,6 +376,29 @@ export const App: React.FC = () => {
                     onActionClick={handleActionClick}
                   />
                 ))}
+
+                {messages.length === 1 && (
+                  <div className="space-y-2 mt-2 animate-fadeIn">
+                    <div className="text-center py-1">
+                      <span className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-0.5">¿Quieres ayuda para empezar?</span>
+                      <span className="block text-[9px] text-[#96A0A8]">Cuéntenos un poco lo que busca.</span>
+                    </div>
+                    {[
+                      "Quiero obtener información sobre los productos y la ley de neumáticos (D.S. 024-2021-MINAM)",
+                      "¿Cuáles son los precios del Caucho Reciclado y Aceite de Pirólisis?",
+                      "¿Cómo RevoLink me ayuda a obtener puntaje extra en licitaciones del SEACE?"
+                    ].map((text, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleSendMessage(text)}
+                        className="w-full text-left bg-gradient-to-r from-emerald-50/50 to-blue-50/50 hover:from-emerald-50 hover:to-blue-50 border border-slate-100 p-3 rounded-xl text-[11px] font-semibold text-[#123524] transition-all shadow-sm flex items-center justify-between group"
+                      >
+                        <span className="max-w-[90%]">{text}</span>
+                        <span className="material-symbols-outlined text-[14px] text-[#123524] opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {isTyping && (
                   <div className="flex justify-start w-full animate-fadeIn">
