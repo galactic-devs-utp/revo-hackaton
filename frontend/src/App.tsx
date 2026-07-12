@@ -4,6 +4,8 @@ import { BottomNav } from './components/BottomNav';
 import { ChatMessage } from './components/ChatMessage';
 import type { Message } from './components/ChatMessage';
 import { ProductsSimulator } from './components/ProductsSimulator';
+import { Login } from './components/Login';
+import { AdminDashboard } from './components/AdminDashboard';
 
 interface Opportunity {
   id: number;
@@ -18,10 +20,12 @@ interface Opportunity {
 }
 
 export const App: React.FC = () => {
-  // Start on products tab by default
+  // Start on products tab by default or auth selection
   const [activeTab, setActiveTab] = useState('store');
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [userRole, setUserRole] = useState<'user' | 'admin' | null>(null);
+  const [userEmail, setUserEmail] = useState<string>('');
 
   useEffect(() => {
     const fetchOpportunities = async () => {
@@ -260,6 +264,9 @@ export const App: React.FC = () => {
               <span className="text-4xl">👤</span>
               <h2 className="text-xl font-bold text-[#123524] mt-4 tracking-tight">Perfil de Empresa</h2>
               <p className="text-xs text-[#5B6570] mt-2 font-mono">
+                Usuario: <span className="font-bold">{userEmail}</span>
+              </p>
+              <p className="text-xs text-[#5B6570] mt-1 font-mono">
                 ID Comercial: B2B-REVOLINK-8921
               </p>
               <p className="text-xs text-[#5B6570] mt-1 font-mono">
@@ -286,6 +293,12 @@ export const App: React.FC = () => {
             </div>
           </div>
         );
+      case 'admin_dashboard':
+        return (
+          <div className="pt-[88px] pb-[100px] animate-fadeIn">
+            <AdminDashboard />
+          </div>
+        );
       case 'store':
       default:
         return (
@@ -296,117 +309,138 @@ export const App: React.FC = () => {
     }
   };
 
+  if (!userRole) {
+    return (
+      <Login 
+        onLogin={(role, email) => {
+          setUserRole(role);
+          setUserEmail(email);
+          if (role === 'admin') {
+            setActiveTab('admin_dashboard');
+          } else {
+            setActiveTab('store');
+          }
+        }} 
+      />
+    );
+  }
+
   return (
     <div className="bg-[#F7F7F2] min-h-screen text-[#14181A] font-body-md overflow-x-hidden">
-      <Header />
+      <Header onLogout={() => setUserRole(null)} userRole={userRole} />
       {renderContent()}
-      <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
+      
+      {userRole === 'user' && (
+        <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
+      )}
 
-      {/* FLOATING CHAT WIDGET */}
-      <div className="fixed bottom-20 md:bottom-6 right-6 z-50 flex flex-col items-end">
-        {/* Chat Window */}
-        {isChatOpen && (
-          <div className="bg-white/95 backdrop-blur-[15px] border border-[#E7E7E1] w-[calc(100vw-48px)] sm:w-[400px] h-[480px] max-h-[70vh] sm:max-h-[500px] rounded-2xl shadow-2xl flex flex-col mb-4 overflow-hidden animate-fadeIn select-none border-l-4 border-l-[#123524]">
-            {/* Header */}
-            <div className="bg-[#F7F7F2] border-b border-[#E7E7E1] px-4 py-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <img 
-                  src="/female_ai_avatar.png" 
-                  alt="Terra AI Avatar" 
-                  className="w-8 h-8 rounded-lg object-cover border border-[#E7E7E1]"
-                />
-                <div>
-                  <h3 className="font-bold text-xs text-[#14181A]">Terra AI</h3>
-                  <p className="text-[9px] text-[#2E9E5B] font-semibold">Online • Soporte Circular</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setIsChatOpen(false)}
-                className="text-[#96A0A8] hover:text-[#14181A] text-sm font-bold flex items-center justify-center p-1 hover:bg-slate-100 rounded-full transition-colors"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Message Area */}
-            <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-slate-50/50">
-              {messages.map((msg) => (
-                <ChatMessage 
-                  key={msg.id} 
-                  message={msg} 
-                  onActionClick={handleActionClick}
-                />
-              ))}
-
-              {isTyping && (
-                <div className="flex justify-start w-full animate-fadeIn">
-                  <div className="bg-white border border-[#E7E7E1] shadow-sm text-on-surface rounded-xl rounded-tl-none p-3.5 max-w-[85%] flex items-center gap-2">
-                    <span className="text-[11px] text-[#5B6570]">Escribiendo</span>
-                    <div className="flex gap-0.5">
-                      <span className="w-1.5 h-1.5 bg-[#2E9E5B] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                      <span className="w-1.5 h-1.5 bg-[#2E9E5B] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                      <span className="w-1.5 h-1.5 bg-[#2E9E5B] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
-                    </div>
+      {/* FLOATING CHAT WIDGET - Only for Client Users */}
+      {userRole === 'user' && (
+        <div className="fixed bottom-20 md:bottom-6 right-6 z-50 flex flex-col items-end">
+          {/* Chat Window */}
+          {isChatOpen && (
+            <div className="bg-white/95 backdrop-blur-[15px] border border-[#E7E7E1] w-[calc(100vw-48px)] sm:w-[400px] h-[480px] max-h-[70vh] sm:max-h-[500px] rounded-2xl shadow-2xl flex flex-col mb-4 overflow-hidden animate-fadeIn select-none border-l-4 border-l-[#123524]">
+              {/* Header */}
+              <div className="bg-[#F7F7F2] border-b border-[#E7E7E1] px-4 py-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <img 
+                    src="/female_ai_avatar.png" 
+                    alt="Terra AI Avatar" 
+                    className="w-8 h-8 rounded-lg object-cover border border-[#E7E7E1]"
+                  />
+                  <div>
+                    <h3 className="font-bold text-xs text-[#14181A]">Terra AI</h3>
+                    <p className="text-[9px] text-[#2E9E5B] font-semibold">Online • Soporte Circular</p>
                   </div>
                 </div>
-              )}
-              <div ref={chatEndRef} />
-            </div>
-
-            {/* Input Area (Custom Styling for Widget) */}
-            <div className="border-t border-[#E7E7E1] p-3 bg-white">
-              <form 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const form = e.target as HTMLFormElement;
-                  const input = form.elements.namedItem('message') as HTMLInputElement;
-                  if (input.value.trim()) {
-                    handleSendMessage(input.value);
-                    input.value = '';
-                  }
-                }}
-                className="flex items-center gap-2 bg-[#F7F7F2] border border-[#E7E7E1] rounded-lg p-1 focus-within:border-[#123524] transition-all"
-              >
-                <input 
-                  name="message"
-                  type="text"
-                  placeholder="Pregúntale a Terra..."
-                  className="flex-grow bg-transparent border-none py-1.5 px-2.5 text-xs text-[#14181A] focus:outline-none placeholder:text-[#96A0A8]"
-                />
                 <button 
-                  type="submit"
-                  className="p-1.5 bg-[#123524] text-white rounded-md hover:bg-[#0B2A1B] transition-colors flex items-center justify-center"
+                  onClick={() => setIsChatOpen(false)}
+                  className="text-[#96A0A8] hover:text-[#14181A] text-sm font-bold flex items-center justify-center p-1 hover:bg-slate-100 rounded-full transition-colors"
                 >
-                  <span className="material-symbols-outlined text-[16px] notranslate" translate="no">send</span>
+                  ✕
                 </button>
-              </form>
-            </div>
-          </div>
-        )}
+              </div>
 
-        {/* Floating Action Button (FAB) - Square with Avatar */}
-        <button
-          onClick={() => setIsChatOpen(!isChatOpen)}
-          className="bg-white border-2 border-[#123524] w-18 h-18 rounded-2xl flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all duration-150 relative overflow-hidden group"
-          aria-label="Abrir Asistente Terra AI"
-        >
-          {isChatOpen ? (
-            <span className="material-symbols-outlined text-[32px] text-[#123524] notranslate" translate="no">close</span>
-          ) : (
-            <img 
-              src="/female_ai_avatar.png" 
-              alt="Terra AI" 
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
-            />
+              {/* Message Area */}
+              <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-slate-50/50">
+                {messages.map((msg) => (
+                  <ChatMessage 
+                    key={msg.id} 
+                    message={msg} 
+                    onActionClick={handleActionClick}
+                  />
+                ))}
+
+                {isTyping && (
+                  <div className="flex justify-start w-full animate-fadeIn">
+                    <div className="bg-white border border-[#E7E7E1] shadow-sm text-on-surface rounded-xl rounded-tl-none p-3.5 max-w-[85%] flex items-center gap-2">
+                      <span className="text-[11px] text-[#5B6570]">Escribiendo</span>
+                      <div className="flex gap-0.5">
+                        <span className="w-1.5 h-1.5 bg-[#2E9E5B] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                        <span className="w-1.5 h-1.5 bg-[#2E9E5B] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                        <span className="w-1.5 h-1.5 bg-[#2E9E5B] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
+
+              {/* Input Area (Custom Styling for Widget) */}
+              <div className="border-t border-[#E7E7E1] p-3 bg-white">
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const form = e.target as HTMLFormElement;
+                    const input = form.elements.namedItem('message') as HTMLInputElement;
+                    if (input.value.trim()) {
+                      handleSendMessage(input.value);
+                      input.value = '';
+                    }
+                  }}
+                  className="flex items-center gap-2 bg-[#F7F7F2] border border-[#E7E7E1] rounded-lg p-1 focus-within:border-[#123524] transition-all"
+                >
+                  <input 
+                    name="message"
+                    type="text"
+                    placeholder="Pregúntale a Terra..."
+                    className="flex-grow bg-transparent border-none py-1.5 px-2.5 text-xs text-[#14181A] focus:outline-none placeholder:text-[#96A0A8]"
+                  />
+                  <button 
+                    type="submit"
+                    className="p-1.5 bg-[#123524] text-white rounded-md hover:bg-[#0B2A1B] transition-colors flex items-center justify-center"
+                  >
+                    <span className="material-symbols-outlined text-[16px] notranslate" translate="no">send</span>
+                  </button>
+                </form>
+              </div>
+            </div>
           )}
-          {!isChatOpen && (
-            <span className="absolute -top-1 -right-1 flex h-4 w-4">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C6E24C] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-4 w-4 bg-[#C6E24C] text-[9px] font-bold text-[#123524] justify-center items-center">!</span>
-            </span>
-          )}
-        </button>
-      </div>
+
+          {/* Floating Action Button (FAB) - Square with Avatar */}
+          <button
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            className="bg-white border-2 border-[#123524] w-18 h-18 rounded-2xl flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all duration-150 relative overflow-hidden group"
+            aria-label="Abrir Asistente Terra AI"
+          >
+            {isChatOpen ? (
+              <span className="material-symbols-outlined text-[32px] text-[#123524] notranslate" translate="no">close</span>
+            ) : (
+              <img 
+                src="/female_ai_avatar.png" 
+                alt="Terra AI" 
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200"
+              />
+            )}
+            {!isChatOpen && (
+              <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C6E24C] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-4 w-4 bg-[#C6E24C] text-[9px] font-bold text-[#123524] justify-center items-center">!</span>
+              </span>
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
