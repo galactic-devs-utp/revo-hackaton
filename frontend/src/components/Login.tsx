@@ -46,7 +46,7 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#123524] via-[#0f2d1e] to-[#0b2217] p-6">
+    <div className="min-h-[max(884px,100dvh)] w-full flex flex-col items-center justify-center bg-gradient-to-br from-[#123524] via-[#0f2d1e] to-[#0b2217] p-6">
       {/* CENTRED LOGO */}
       <div className="flex flex-col items-center gap-2 mb-8 animate-fadeIn">
         <span className="text-[#C6E24C] text-5xl font-bold">♻</span>
