@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 const INITIAL_QUOTES = [
   {
     id: 'Q-082',
+    ticket: '58492',
     empresa: 'Consorcio Vial Piura S.A.C.',
     material: 'Caucho Granulado Fino',
     volumen: '45.2 Tons',
@@ -14,6 +15,7 @@ const INITIAL_QUOTES = [
   },
   {
     id: 'Q-081',
+    ticket: '39481',
     empresa: 'Aceros Arequipa S.A.',
     material: 'Acero de Llanta Siderúrgico',
     volumen: '180.0 Tons',
@@ -24,6 +26,7 @@ const INITIAL_QUOTES = [
   },
   {
     id: 'Q-080',
+    ticket: '82048',
     empresa: 'UNACEM S.A.A.',
     material: 'Aceite Pirolítico Industrial',
     volumen: '8,500 Gls',
@@ -34,6 +37,7 @@ const INITIAL_QUOTES = [
   },
   {
     id: 'Q-079',
+    ticket: '19385',
     empresa: 'Constructora San Martín S.A.',
     material: 'Negro de Humo Recuperado (rCB)',
     volumen: '12.5 Tons',
@@ -80,6 +84,7 @@ export const AdminDashboard: React.FC = () => {
             <thead>
               <tr className="bg-[#F7F7F2] border-b border-[#E7E7E1] text-[#5B6570] font-bold">
                 <th className="px-6 py-3.5">ID</th>
+                <th className="px-6 py-3.5">Ticket</th>
                 <th className="px-6 py-3.5">Cliente / Empresa</th>
                 <th className="px-6 py-3.5">Insumo Requerido</th>
                 <th className="px-6 py-3.5">Volumen</th>
@@ -93,6 +98,7 @@ export const AdminDashboard: React.FC = () => {
               {quotes.map((quote) => (
                 <tr key={quote.id} className="hover:bg-slate-50 transition-colors">
                   <td className="px-6 py-4 font-mono font-bold text-[#14181A]">{quote.id}</td>
+                  <td className="px-6 py-4 font-mono text-[#5b6570] font-semibold">{quote.ticket}</td>
                   <td className="px-6 py-4">
                     <div className="font-bold text-[#14181A]">{quote.empresa}</div>
                     <div className="text-[10px] text-[#96A0A8]">{quote.contacto}</div>
