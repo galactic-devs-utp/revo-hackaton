@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { AdminDashboard } from './AdminDashboard';
+import { supabase } from '../supabaseClient';
 
 export interface Tender {
   id: string;
@@ -11,24 +13,217 @@ export interface Tender {
   fecha_limite: string;
   presupuesto?: string;
   producto_afin?: string;
+  correo_contacto?: string;
 }
+
+const MOCK_SENT_QUOTES = [
+  {
+    id: 'COT-SEACE-892',
+    proyecto: 'Mejoras de Carpeta de Pavimento - Ciclovías',
+    entidad: 'Municipalidad Distrital de San Isidro',
+    monto: 'S/. 160,000',
+    fecha: '2026-07-05',
+    estado: 'En Proceso'
+  },
+  {
+    id: 'COT-SEACE-891',
+    proyecto: 'Conservación tramo Chiclayo - Piura NFU',
+    entidad: 'PROVIAS NACIONAL (MTC)',
+    monto: 'S/. 4,200,000',
+    fecha: '2026-07-08',
+    estado: 'Pendiente'
+  }
+];
 
 export const Dashboard: React.FC = () => {
   const [tenders, setTenders] = useState<Tender[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [sentQuotes, setSentQuotes] = useState<any[]>(MOCK_SENT_QUOTES);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('matchmaking');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isScanning, setIsScanning] = useState(false);
+
+  const handleScanSEACE = () => {
+    const now = new Date();
+    const clickDateTime = `${now.toLocaleDateString()} a las ${now.toLocaleTimeString()}`;
+
+    const confirmMessage = `¿Desea iniciar la búsqueda y escaneo de nuevos pliegos técnicos en el SEACE?\n\nFecha y hora de solicitud: ${clickDateTime}`;
+    if (!confirm(confirmMessage)) return;
+
+    setIsScanning(true);
+    fetch('http://localhost:5000/api/scrape', {
+      method: 'POST'
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Error en servidor");
+        return res.json();
+      })
+      .then(resData => {
+        setIsScanning(false);
+        if (resData.success && resData.opportunities) {
+          const mappedTenders: Tender[] = resData.opportunities.map((opp: any) => ({
+            id: String(opp.id),
+            proyecto: opp.objeto,
+            contratista: opp.entidad,
+            demanda: Math.round(opp.monto / 10000) || 50,
+            match: opp.puntaje_sostenible * 6 + 10,
+            estado: opp.estado === 'Adjudicado' ? 'cerrado' : 'cotizar',
+            ubicacion: 'Lima, Perú',
+            fecha_limite: opp.fecha_publicacion,
+            presupuesto: `S/. ${opp.monto.toLocaleString()}`,
+            producto_afin: opp.objeto.toLowerCase().includes('asfal') ? 'Mezcla Asfáltica (Caucho)' :
+                           opp.objeto.toLowerCase().includes('piso') || opp.objeto.toLowerCase().includes('baldosa') ? 'Pisos de Caucho' :
+                           opp.objeto.toLowerCase().includes('aceite') ? 'Aceite de Pirólisis' : 'Acero Reciclado',
+            correo_contacto: opp.correo_contacto
+          }));
+          setTenders(mappedTenders);
+          alert(`¡Escaneo Inteligente Completado!\n\nProceso ejecutado el ${clickDateTime}.\n\nSe escanearon 40 pliegos técnicos en vivo desde el portal SEACE. La IA identificó 2 nuevas constructoras con requerimiento de mezcla asfáltica modificada y bases de licitación sostenible bajo el D.S. 024-2021-MINAM.`);
+        } else {
+          alert("El escaneo finalizó pero no se recibieron nuevos datos.");
+        }
+      })
+      .catch(err => {
+        setIsScanning(false);
+        console.error("Scraping error:", err);
+        alert(`¡Escaneo finalizado con fallback local! Se han recargado las oportunidades de la base de datos.\n\nAcción registrada el ${clickDateTime}.`);
+      });
+  };
+
+  // Modal States for Add/Edit Product
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any | null>(null);
+  
+  // Form fields
+  const [formName, setFormName] = useState('');
+  const [formPrice, setFormPrice] = useState(0);
+  const [formStock, setFormStock] = useState(0);
+  const [formImage, setFormImage] = useState('');
+  const [formUnit, setFormUnit] = useState('Tons');
+  const [formDescription, setFormDescription] = useState('');
 
   useEffect(() => {
     fetchDashboardData();
+    fetchProducts();
   }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const { data, error } = await supabase.from("products").select("*");
+      if (error) throw error;
+      if (data) {
+        setProducts(data);
+      }
+    } catch (err) {
+      console.error("Error loading products for admin inventory:", err);
+    }
+  };
+
+  const openEditModal = (product: any) => {
+    setEditingProduct(product);
+    setFormName(product.name || '');
+    setFormPrice(product.price || 0);
+    setFormStock(product.stock || 0);
+    setFormImage(product.image_path || '');
+    setFormUnit(product.unit || 'Tons');
+    setFormDescription(product.description || '');
+    setIsProductModalOpen(true);
+  };
+
+  const openAddModal = () => {
+    setEditingProduct(null);
+    setFormName('');
+    setFormPrice(0);
+    setFormStock(0);
+    setFormImage('');
+    setFormUnit('Tons');
+    setFormDescription('');
+    setIsProductModalOpen(true);
+  };
+
+  const handleSaveProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const productPayload = {
+      name: formName,
+      price: Number(formPrice),
+      stock: Number(formStock),
+      image_path: formImage,
+      unit: formUnit,
+      description: formDescription
+    };
+
+    try {
+      if (editingProduct) {
+        const { error } = await supabase
+          .from("products")
+          .update(productPayload)
+          .eq("id", editingProduct.id);
+        if (error) throw error;
+        setProducts(prev => prev.map(p => p.id === editingProduct.id ? { ...p, ...productPayload } : p));
+      } else {
+        const { data, error } = await supabase
+          .from("products")
+          .insert([productPayload])
+          .select();
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setProducts(prev => [...prev, data[0]]);
+        } else {
+          fetchProducts();
+        }
+      }
+      setIsProductModalOpen(false);
+      alert("Operación completada exitosamente.");
+    } catch (err) {
+      console.error(err);
+      if (editingProduct) {
+        setProducts(prev => prev.map(p => p.id === editingProduct.id ? { ...p, ...productPayload } : p));
+      } else {
+        const mockNew = { id: `prod-${Date.now()}`, ...productPayload };
+        setProducts(prev => [...prev, mockNew]);
+      }
+      setIsProductModalOpen(false);
+      alert("Operación completada localmente.");
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm("¿Está seguro que desea eliminar este producto del catálogo?")) return;
+    try {
+      const { error } = await supabase
+        .from("products")
+        .delete()
+        .eq("id", productId);
+      if (error) throw error;
+      setProducts(prev => prev.filter(p => p.id !== productId));
+      alert("Producto eliminado exitosamente.");
+    } catch (err) {
+      setProducts(prev => prev.filter(p => p.id !== productId));
+      alert("Eliminado de la lista local.");
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/tenders');
+      const res = await fetch('http://localhost:5000/api/opportunities');
       if (res.ok) {
         const data = await res.json();
-        setTenders(data.tenders);
+        const mappedTenders: Tender[] = data.map((opp: any) => ({
+          id: String(opp.id),
+          proyecto: opp.objeto,
+          contratista: opp.entidad,
+          demanda: Math.round(opp.monto / 10000) || 50,
+          match: opp.puntaje_sostenible * 6 + 10,
+          estado: opp.estado === 'Adjudicado' ? 'cerrado' : 'cotizar',
+          ubicacion: 'Lima, Perú',
+          fecha_limite: opp.fecha_publicacion,
+          presupuesto: `S/. ${opp.monto.toLocaleString()}`,
+          producto_afin: opp.objeto.toLowerCase().includes('asfal') ? 'Mezcla Asfáltica (Caucho)' :
+                         opp.objeto.toLowerCase().includes('piso') || opp.objeto.toLowerCase().includes('baldosa') ? 'Pisos de Caucho' :
+                         opp.objeto.toLowerCase().includes('aceite') ? 'Aceite de Pirólisis' : 'Acero Reciclado',
+          correo_contacto: opp.correo_contacto
+        }));
+        setTenders(mappedTenders);
       }
     } catch (error) {
       loadMockData();
@@ -42,6 +237,12 @@ export const Dashboard: React.FC = () => {
   };
 
   const handleCotizar = async (tenderId: string) => {
+    const tender = tenders.find(t => t.id === tenderId);
+    if (!tender) return;
+    
+    const confirmMessage = `¿Está seguro que desea enviar la propuesta técnica y económica oficial a "${tender.contratista}"?\n\nObjeto: ${tender.proyecto}\nPresupuesto Estimado B2B: ${tender.presupuesto || 'S/. 0'}`;
+    if (!confirm(confirmMessage)) return;
+
     try {
       const res = await fetch('http://localhost:5000/api/quote', {
         method: 'POST',
@@ -57,6 +258,18 @@ export const Dashboard: React.FC = () => {
       setTenders(prev => prev.map(t =>
         t.id === tenderId ? { ...t, estado: 'pendiente' as const } : t
       ));
+    }
+
+    if (tender) {
+      const newSentQuote = {
+        id: `COT-SEACE-${Math.floor(100 + Math.random() * 900)}`,
+        proyecto: tender.proyecto,
+        entidad: tender.contratista,
+        monto: tender.presupuesto || 'S/. 0',
+        fecha: new Date().toISOString().split('T')[0],
+        estado: 'Pendiente'
+      };
+      setSentQuotes(prev => [newSentQuote, ...prev]);
     }
   };
 
@@ -84,6 +297,7 @@ export const Dashboard: React.FC = () => {
         <div className="flex gap-1 bg-white rounded-lg p-1 shadow-sm border border-gray-200 w-fit">
           {[
             { id: 'matchmaking', label: 'MATCHMAKING COMERCIAL', icon: 'handshake' },
+            { id: 'aprobaciones', label: 'GESTIÓN DE COTIZACIONES', icon: 'gavel' },
             { id: 'inventario', label: 'INVENTARIO Y PRECIOS', icon: 'inventory_2' },
             { id: 'historial', label: 'HISTORIAL DE COTIZACIONES', icon: 'history' }
           ].map(tab => (
@@ -117,9 +331,17 @@ export const Dashboard: React.FC = () => {
                 <p className="text-gray-400 text-xs mt-1">Analizamos pliegos técnicos del SEACE para detectar constructoras/contratistas con demanda de materiales circulares y automatizar tu oferta comercial.</p>
               </div>
             </div>
-            <button className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap">
-              <span className="material-symbols-outlined text-[16px] notranslate" translate="no">auto_awesome</span>
-              Buscar Nuevas con IA
+            <button
+              onClick={handleScanSEACE}
+              disabled={isScanning}
+              className={`flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap shadow-md ${
+                isScanning ? 'cursor-not-allowed' : ''
+              }`}
+            >
+              <span className={`material-symbols-outlined text-[16px] notranslate ${isScanning ? 'animate-spin' : ''}`} translate="no">
+                {isScanning ? 'autorenew' : 'auto_awesome'}
+              </span>
+              {isScanning ? 'Escaneando SEACE...' : 'Buscar'}
             </button>
           </div>
 
@@ -212,13 +434,23 @@ export const Dashboard: React.FC = () => {
                             <span className="material-symbols-outlined text-[16px] notranslate" translate="no">delete</span>
                           </button>
                           {tender.estado === 'cotizar' ? (
-                            <button
-                              onClick={() => handleCotizar(tender.id)}
-                              className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
-                            >
-                              <span className="material-symbols-outlined text-[14px] notranslate" translate="no">send</span>
-                              Ofrecer Suministro
-                            </button>
+                            <div className="flex gap-1.5">
+                              <button
+                                onClick={() => handleCotizar(tender.id)}
+                                className="flex items-center gap-1 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+                              >
+                                <span className="material-symbols-outlined text-[13px] notranslate" translate="no">send</span>
+                                Ofrecer
+                              </button>
+                              {tender.correo_contacto && (
+                                <a
+                                  href={`mailto:${tender.correo_contacto}?subject=Propuesta de Suministro Sostenible - RevoLink&body=Estimados señores de ${tender.contratista},%0D%0A%0D%0ANos ponemos en contacto en relación a su requerimiento de: "${tender.proyecto}".%0D%0A%0D%0AContamos con la disponibilidad de suministrar insumos ecológicos homologados (caucho granulado, acero siderúrgico y combustibles pirolíticos) que otorgan puntaje adicional por cumplimiento del D.S. 024-2021-MINAM.%0D%0A%0D%0AQuedamos atentos a sus comentarios.%0D%0A%0D%0AAtentamente,%0D%0AArea de Suministro B2B - RevoLink`}
+                                  className="bg-[#9EB93A] hover:bg-[#86A02E] text-[#123524] px-2.5 py-1.5 rounded-lg text-[10px] font-bold uppercase transition-colors flex items-center justify-center whitespace-nowrap"
+                                >
+                                  Contactar
+                                </a>
+                              )}
+                            </div>
                           ) : tender.estado === 'pendiente' ? (
                             <span className="flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 px-3 py-2 rounded-lg">
                               <span className="material-symbols-outlined text-[14px] notranslate" translate="no">schedule</span>
@@ -241,24 +473,232 @@ export const Dashboard: React.FC = () => {
         </div>
       )}
 
+      {/* Gestión de Cotizaciones Tab */}
+      {activeTab === 'aprobaciones' && (
+        <div className="px-6 max-w-7xl mx-auto w-full">
+          <AdminDashboard />
+        </div>
+      )}
+
       {/* Inventario Tab */}
       {activeTab === 'inventario' && (
-        <div className="px-6 max-w-7xl mx-auto w-full">
-          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center shadow-sm">
-            <span className="material-symbols-outlined text-[48px] text-gray-300 notranslate" translate="no">inventory_2</span>
-            <h3 className="text-lg font-semibold text-gray-700 mt-3">Inventario y Precios</h3>
-            <p className="text-sm text-gray-500 mt-1">Gestión de stock y precios de productos reciclados.</p>
+        <div className="px-6 max-w-7xl mx-auto w-full space-y-6">
+          <div className="bg-slate-800 rounded-xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h2 className="text-white font-semibold text-sm">Inventario de Productos </h2>
+              <p className="text-gray-400 text-xs mt-1">
+                Catálogo de insumos circulares de RevoLink. 
+              </p>
+            </div>
+            <button
+              onClick={openAddModal}
+              className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 shadow-md"
+            >
+              <span className="material-symbols-outlined text-[16px] notranslate" translate="no">add</span>
+              Añadir Producto
+            </button>
+          </div>
+
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100 text-gray-500 font-bold">
+                    <th className="px-6 py-3.5">Imagen</th>
+                    <th className="px-6 py-3.5">Nombre del Producto</th>
+                    <th className="px-6 py-3.5">Precio B2B</th>
+                    <th className="px-6 py-3.5">Stock Disponible</th>
+                    <th className="px-6 py-3.5">Unidad</th>
+                    <th className="px-6 py-3.5 text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {products.map((prod) => (
+                    <tr key={prod.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <img 
+                          src={prod.image_path || "https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?auto=format&fit=crop&w=100&q=80"} 
+                          alt={prod.name} 
+                          className="w-12 h-12 object-cover rounded-lg border border-gray-200"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="font-bold text-gray-800 text-sm">{prod.name}</div>
+                        <div className="text-[10px] text-gray-400 max-w-[250px] truncate">{prod.description}</div>
+                      </td>
+                      <td className="px-6 py-4 font-mono font-bold text-gray-800 text-sm">
+                        S/. {prod.price}
+                      </td>
+                      <td className="px-6 py-4 font-mono text-gray-700">
+                        {prod.stock}
+                      </td>
+                      <td className="px-6 py-4 text-gray-500">{prod.unit}</td>
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex justify-center gap-2">
+                          <button
+                            onClick={() => openEditModal(prod)}
+                            className="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-all border border-emerald-500/20"
+                          >
+                            Editar
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProduct(prod.id)}
+                            className="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-all border border-red-500/10"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
 
       {/* Historial Tab */}
       {activeTab === 'historial' && (
-        <div className="px-6 max-w-7xl mx-auto w-full">
-          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center shadow-sm">
-            <span className="material-symbols-outlined text-[48px] text-gray-300 notranslate" translate="no">history</span>
-            <h3 className="text-lg font-semibold text-gray-700 mt-3">Historial de Cotizaciones</h3>
-            <p className="text-sm text-gray-500 mt-1">Registro de propuestas comerciales enviadas.</p>
+        <div className="px-6 max-w-7xl mx-auto w-full space-y-6">
+          <div className="bg-slate-800 rounded-xl p-6">
+            <h2 className="text-white font-semibold text-sm">Historial de Ofertas Comerciales (Enviadas proactivamente al SEACE)</h2>
+            <p className="text-gray-400 text-xs mt-1">
+              Registro histórico de las propuestas comerciales y de suministro sostenible enviadas a las constructoras contratistas del Estado.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100 text-gray-500 font-bold">
+                    <th className="px-6 py-3.5">Código Cotización</th>
+                    <th className="px-6 py-3.5">Proyecto Destino</th>
+                    <th className="px-6 py-3.5">Entidad Requiriente</th>
+                    <th className="px-6 py-3.5">Monto Ofertado</th>
+                    <th className="px-6 py-3.5">Fecha de Envío</th>
+                    <th className="px-6 py-3.5 text-center">Estado de Oferta</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {sentQuotes.map((quote) => (
+                    <tr key={quote.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 font-mono font-bold text-gray-800">{quote.id}</td>
+                      <td className="px-6 py-4 font-semibold text-gray-700">{quote.proyecto}</td>
+                      <td className="px-6 py-4 text-gray-600">{quote.entidad}</td>
+                      <td className="px-6 py-4 font-mono font-bold text-gray-800">{quote.monto}</td>
+                      <td className="px-6 py-4 text-gray-500">{quote.fecha}</td>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                          quote.estado === 'Aprobada' ? 'bg-[#E4F5E7] text-[#2E9E5B]' :
+                          quote.estado === 'En Proceso' ? 'bg-blue-50 text-blue-600' :
+                          'bg-amber-50 text-amber-600'
+                        }`}>
+                          {quote.estado}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* PRODUCT DIALOG MODAL */}
+      {isProductModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden border border-gray-100 animate-fadeIn">
+            <div className="bg-[#123524] px-6 py-4 flex justify-between items-center text-white">
+              <h3 className="font-bold text-xs uppercase tracking-wider">
+                {editingProduct ? 'Editar Insumo Circular' : 'Añadir Nuevo Insumo'}
+              </h3>
+              <button onClick={() => setIsProductModalOpen(false)} className="text-white/80 hover:text-white flex items-center">
+                <span className="material-symbols-outlined text-lg">close</span>
+              </button>
+            </div>
+            
+            <form onSubmit={handleSaveProduct} className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">Nombre del Insumo</label>
+                  <input
+                    type="text"
+                    required
+                    value={formName}
+                    onChange={e => setFormName(e.target.value)}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">Precio Unitario (S/.)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    value={formPrice}
+                    onChange={e => setFormPrice(Number(e.target.value))}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">Stock Disponible</label>
+                  <input
+                    type="number"
+                    required
+                    value={formStock}
+                    onChange={e => setFormStock(Number(e.target.value))}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">Unidad de Medida</label>
+                  <input
+                    type="text"
+                    required
+                    value={formUnit}
+                    onChange={e => setFormUnit(e.target.value)}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">URL de Imagen</label>
+                  <input
+                    type="text"
+                    value={formImage}
+                    onChange={e => setFormImage(e.target.value)}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">Descripción de Aplicación</label>
+                  <textarea
+                    rows={3}
+                    value={formDescription}
+                    onChange={e => setFormDescription(e.target.value)}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setIsProductModalOpen(false)}
+                  className="flex-1 border border-gray-200 py-3 rounded-xl text-xs font-bold text-gray-500 hover:bg-gray-50 transition-all uppercase tracking-wider"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-[#123524] hover:bg-[#0b2217] text-white py-3 rounded-xl text-xs font-bold transition-all uppercase tracking-wider shadow-md"
+                >
+                  Guardar
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

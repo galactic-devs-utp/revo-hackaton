@@ -41,21 +41,16 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick
   return (
     <div className="flex justify-start w-full animate-fadeInLong">
       <div className="bg-white/80 backdrop-blur-[20px] border border-white/40 shadow-[0_12px_40px_-12px_rgba(0,24,16,0.08)] text-on-surface rounded-xl rounded-tl-none p-5 max-w-[95%] md:max-w-[85%] relative overflow-hidden group">
-        {/* Terra AI Ambient Glow */}
+        {/* SofiA Ambient Glow */}
         <div className="absolute -top-10 -left-10 w-32 h-32 bg-secondary-container/30 rounded-full blur-2xl pointer-events-none group-hover:bg-secondary-container/40 transition-colors duration-500"></div>
         <div className="relative z-10 flex flex-col gap-sm">
-          {/* Header */}
           <div className="flex items-center gap-2 mb-1">
-            <div className="bg-secondary/10 p-1.5 rounded-full flex items-center justify-center">
-              <span 
-                className="material-symbols-outlined text-secondary font-headline-md text-headline-md notranslate" 
-                translate="no"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                smart_toy
-              </span>
-            </div>
-            <span className="font-label-md text-label-md text-on-surface">Terra AI</span>
+            <img 
+              src="/female_ai_avatar.png" 
+              alt="SofiA" 
+              className="w-7 h-7 rounded-md object-cover border border-slate-100"
+            />
+            <span className="font-label-md text-label-md text-on-surface">SofiA</span>
           </div>
 
           {/* Content */}
@@ -64,20 +59,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick
             dangerouslySetInnerHTML={{ __html: message.content }}
           />
 
-          {/* Law Snippet Card */}
-          {message.lawSnippet && (
-            <div className="bg-surface-container-lowest/50 border border-outline-variant p-4 rounded-lg my-2 border-l-4 border-l-secondary shadow-sm relative overflow-hidden">
-              <div className="absolute right-0 top-0 opacity-5 pointer-events-none">
-                <span className="material-symbols-outlined text-[64px] notranslate" translate="no">gavel</span>
-              </div>
-              <h4 className="font-label-sm text-label-sm text-secondary mb-2 uppercase tracking-wider">
-                {message.lawSnippet.title}
-              </h4>
-              <p className="font-body-sm text-body-sm text-on-surface-variant italic">
-                "{message.lawSnippet.text}"
-              </p>
-            </div>
-          )}
 
           {/* Call to Action */}
           {message.actionButton && (

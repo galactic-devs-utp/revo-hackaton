@@ -190,10 +190,20 @@ def generate_local_response(query, best_product, best_regulation):
         else:
             content += 'Nuestros productos de caucho granulado y pirolisis apoyan el cumplimiento.'
         action = None
-        if 'certificado' in query_lower or 'descargar' in query_lower or 'cumplimiento' in query_lower:
-            action = {'label': 'Descargar Ficha de Cumplimiento', 'icon': 'download', 'actionType': 'download_certificate'}
-        return content, {'title': best_regulation['title'], 'text': best_regulation['snippet']}, action
-    content = 'Hola, soy **Terra AI**, asistente virtual de **RevoLink**. Puedo ayudarte con economia circular, NFU y nuestros productos ecologicos bajo la normativa D.S. 024-2021-MINAM.'
+        if "certificado" in query_lower or "descargar" in query_lower or "cumplimiento" in query_lower:
+            action = {
+                "label": "Descargar Ficha de Cumplimiento",
+                "icon": "download",
+                "actionType": "download_certificate"
+            }
+
+        return content, {
+            "title": best_regulation["title"],
+            "text": best_regulation["snippet"]
+        }, action
+
+    # 3. Default fallback
+    content = "Hola, soy **Terra AI**, asistente virtual de **RevoLink**. Puedo ayudarte a responder consultas técnicas sobre economía circular, neumáticos fuera de uso (NFU) y nuestros productos ecológicos (Mulch de Caucho y Aceite de Pirólisis) bajo la normativa peruana D.S. 024-2021-MINAM."
     return content, None, None
 
 def generate_gemini_response(query, best_product, best_regulation):
@@ -201,9 +211,18 @@ def generate_gemini_response(query, best_product, best_regulation):
     if best_product:
         context += f"Producto: {best_product['name']}\nDesc: {best_product.get('description', '')}\nUso: {best_product.get('usage', '')}\nPrecio: ${best_product['price']} por {best_product['unit']}\nStock: {best_product.get('stock', 0)}\n\n"
     if best_regulation:
-        context += f"Regulacion: {best_regulation['title']}\nResumen: {best_regulation['summary']}\nExtracto: {best_regulation['snippet']}\n\n"
-    system_prompt = 'Eres Terra AI, asistente experto en economia circular y NFU de RevoLink. Responde en espanol, claro y conciso. No inventes precios ni datos tecnicos. Usa markdown y HTML strong para destacar.'
-    prompt = f'Contexto:\n{context}\nPregunta: {query}\n\nRespuesta:'
+        context += f"Regulación Ambiental Peruana Relevante:\n- Título: {best_regulation['title']}\n- Nombre: {best_regulation['name']}\n- Resumen: {best_regulation['summary']}\n- Extracto: {best_regulation['snippet']}\n\n"
+
+    system_prompt = (
+        "Eres Terra AI, el asistente virtual experto en economía circular y gestión de neumáticos fuera de uso (NFU) de la plataforma RevoLink.\n"
+        "Debes responder de manera profesional, clara y concisa en español, utilizando formato markdown.\n"
+        "Bajo ninguna circunstancia inventes información técnica o de precios. Si no encuentras la información en el contexto provisto, indícalo educadamente.\n"
+        "Si el usuario pregunta sobre cómo comprar, cotizar o descargar certificados, incluye una indicación clara en tu respuesta de que hay un botón disponible.\n"
+        "Usa etiquetas HTML fuertes (strong) para destacar términos clave de manera estética."
+    )
+
+    prompt = f"Contexto:\n{context}\n\nPregunta del usuario:\n{query}\n\nRespuesta de Terra AI:"
+
     try:
         response = client.models.generate_content(model='gemini-1.5-flash', contents=prompt, config=types.GenerateContentConfig(system_instruction=system_prompt))
         text = response.text.strip()
@@ -239,78 +258,8 @@ def chat():
 
 @app.route('/api/health', methods=['GET'])
 def health():
-    return jsonify({'status': 'healthy', 'mode': 'gemini' if client else 'local'})
+    return jsonify({"status": "healthy", "mode": "gemini" if client else "local"})
 
-@app.route('/api/tenders', methods=['GET'])
-def get_tenders():
-    try:
-        tenders_with_ai = []
-        for tender in MOCK_TENDERS:
-            match_score = tender['match']
-            tender_ai = {**tender, 'match_reasoning': f'Alta compatibilidad: stock cubre {min(match_score, 100)}% de la demanda.', 'recomendacion': 'Cotizar inmediatamente' if match_score >= 90 else 'Evaluar alternativas' if match_score >= 70 else 'Baja prioridad', 'productos_sugeridos': tender['materiales_requeridos']}
-            tenders_with_ai.append(tender_ai)
-        return jsonify({'tenders': tenders_with_ai, 'total': len(tenders_with_ai), 'actualizacion': datetime.now().isoformat()})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/tenders/<tender_id>', methods=['GET'])
-def get_tender_detail(tender_id):
-    tender = next((t for t in MOCK_TENDERS if t['id'] == tender_id), None)
-    if not tender:
-        return jsonify({'error': 'Tender not found'}), 404
-    return jsonify({'tender': tender, 'historial_cotizaciones': [{'fecha': '2026-07-01', 'monto': tender['presupuesto_estimado'] * 0.95, 'estado': 'enviada'}] if tender['estado'] != 'cerrado' else [], 'competidores': random.randint(3, 12)})
-
-@app.route('/api/kpis', methods=['GET'])
-def get_kpis():
-    try:
-        kpis = {**MOCK_KPIS, 'ordenes_recientes': MOCK_KPIS['ordenes_recientes'] + random.randint(-2, 3), 'stock_almacen': MOCK_KPIS['stock_almacen'] + random.randint(-20, 20), 'timestamp': datetime.now().isoformat()}
-        return jsonify(kpis)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/logistics', methods=['GET'])
-def get_logistics():
-    origen = request.args.get('origen', 'Almacen Lurin')
-    destino = request.args.get('destino', 'Obra Ate')
-    route_key = (origen, destino)
-    if route_key in MOCK_LOGISTICS_ROUTES:
-        route = MOCK_LOGISTICS_ROUTES[route_key]
-        return jsonify({**route, 'origen': origen, 'destino': destino, 'optimizado': True, 'metodo': 'IA + Datos historicos de trafico', 'timestamp': datetime.now().isoformat()})
-    distancia = random.randint(10, 50)
-    return jsonify({'origen': origen, 'destino': destino, 'distancia_km': distancia, 'ahorro_flete': random.randint(5, 25), 'reduccion_co2': random.randint(8, 30), 'tiempo_estimado': f'{distancia} min', 'ruta_optimizada': [origen, 'Ruta directa', destino], 'optimizado': True, 'metodo': 'Estimacion por distancia', 'timestamp': datetime.now().isoformat()})
-
-@app.route('/api/quote', methods=['POST'])
-def create_quote():
-    data = request.json or {}
-    tender_id = data.get('tender_id')
-    if not tender_id:
-        return jsonify({'error': 'tender_id is required'}), 400
-    tender = next((t for t in MOCK_TENDERS if t['id'] == tender_id), None)
-    if not tender:
-        return jsonify({'error': 'Tender not found'}), 404
-    quote_id = f"quote-{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    return jsonify({'quote_id': quote_id, 'tender_id': tender_id, 'estado': 'enviada', 'monto_estimado': tender['presupuesto_estimado'] * 0.96, 'fecha_envio': datetime.now().isoformat(), 'fecha_respuesta_esperada': (datetime.now() + timedelta(days=7)).isoformat(), 'mensaje': f"Cotizacion enviada para {tender['proyecto']}"})
-
-@app.route('/api/matches', methods=['GET'])
-def get_matches():
-    try:
-        products = fetch_products()
-        matches = []
-        for tender in MOCK_TENDERS:
-            if tender['estado'] == 'cerrado':
-                continue
-            material_score = 85
-            if products:
-                for product in products:
-                    if product.get('stock', 0) > tender['demanda']:
-                        material_score = min(98, material_score + 10)
-                        break
-            match_data = {'tender_id': tender['id'], 'proyecto': tender['proyecto'], 'match_score': min(material_score, tender['match']), 'factores': {'disponibilidad_stock': material_score, 'compatibilidad_logistica': random.randint(70, 95), 'historial_contratista': random.randint(60, 100), 'precio_competitivo': random.randint(75, 95)}, 'accion_recomendada': 'COTIZAR' if material_score >= 85 else 'EVALUAR', 'urgencia': 'ALTA' if tender['match'] >= 95 else 'MEDIA' if tender['match'] >= 80 else 'BAJA'}
-            matches.append(match_data)
-        return jsonify({'matches': sorted(matches, key=lambda x: x['match_score'], reverse=True), 'total_oportunidades': len(matches), 'potencial_ingresos': sum(t['presupuesto_estimado'] for t in MOCK_TENDERS if t['estado'] != 'cerrado')})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
