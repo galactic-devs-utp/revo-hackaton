@@ -48,8 +48,12 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-12 bg-[#F7F7F2]">
       {/* SECCIÓN IZQUIERDA: Banner Informativo Estilo RevoLink */}
-      <div className="hidden lg:flex lg:col-span-6 bg-gradient-to-br from-[#123524] to-[#0b2217] text-white p-12 flex-col justify-between relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-green-500 via-transparent to-transparent"></div>
+      <div 
+        className="hidden lg:flex lg:col-span-6 text-white p-12 flex-col justify-between relative overflow-hidden bg-cover bg-center"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1590102422319-6a836190a60a?auto=format&fit=crop&w=1200&q=80')" }}
+      >
+        {/* Filtro Oscuro de Superposición */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#123524]/92 via-[#0b2217]/96 to-[#0b2217]/98 z-0"></div>
         
         {/* LOGO */}
         <div className="flex items-center gap-2 z-10">
