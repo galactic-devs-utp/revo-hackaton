@@ -101,4 +101,4 @@ La aplicación web se abrirá automáticamente en tu navegador en `http://localh
 ## 💡 Flujo de Trabajo en la Plataforma
 
 1. **Catálogo y Simulador B2B:** La pantalla por defecto te permite navegar entre los productos homologados y estimar volúmenes requeridos, presupuesto (F.O.B.) y mitigación de CO2 según el tipo de aplicación del proyecto.
-2. **Chatbot Inteligente (Terra AI):** Haz clic en el ícono flotante de avatar casual en la esquina inferior derecha para abrir el panel mediano del chatbot. Puedes preguntarle sobre el cumplimiento de normativas como el *D.S. 024-2021-MINAM*.
+2. **Chatbot Inteligente (SofiA):** Haz clic en el ícono flotante de avatar casual en la esquina inferior derecha para abrir el panel mediano del chatbot. Puedes preguntarle sobre el cumplimiento de normativas como el *D.S. 024-2021-MINAM*.
