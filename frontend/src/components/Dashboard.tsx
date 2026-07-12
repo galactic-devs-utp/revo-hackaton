@@ -191,6 +191,11 @@ export const Dashboard: React.FC = () => {
 
   const handleCotizar = async (tenderId: string) => {
     const tender = tenders.find(t => t.id === tenderId);
+    if (!tender) return;
+    
+    const confirmMessage = `¿Está seguro que desea enviar la propuesta técnica y económica oficial a "${tender.contratista}"?\n\nObjeto: ${tender.proyecto}\nPresupuesto Estimado B2B: ${tender.presupuesto || 'S/. 0'}`;
+    if (!confirm(confirmMessage)) return;
+
     try {
       const res = await fetch('http://localhost:5000/api/quote', {
         method: 'POST',
