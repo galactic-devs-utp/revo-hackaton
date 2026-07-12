@@ -378,6 +378,14 @@ def trigger_scrape():
 @app.route("/api/corporate-quotes", methods=["GET"])
 def get_corporate_quotes():
     try:
+        # Query Supabase table first
+        response = supabase.table("corporate_quotes").select("*").order("fecha", desc=True).execute()
+        if response.data is not None:
+            return jsonify(response.data)
+    except Exception as e:
+        print(f"Supabase GET corporate-quotes error: {e}. Falling back to local JSON.")
+        
+    try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         json_path = os.path.join(current_dir, "data", "corporate_quotes.json")
         if os.path.exists(json_path):
@@ -392,6 +400,16 @@ def get_corporate_quotes():
 
 @app.route("/api/corporate-quotes", methods=["POST"])
 def add_corporate_quote():
+    new_quote = request.json or {}
+    try:
+        # Write to Supabase first
+        supabase.table("corporate_quotes").insert(new_quote).execute()
+        response = supabase.table("corporate_quotes").select("*").order("fecha", desc=True).execute()
+        if response.data is not None:
+            return jsonify({"success": True, "quotes": response.data}), 200
+    except Exception as e:
+        print(f"Supabase POST corporate-quotes error: {e}. Falling back to local JSON.")
+
     try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         json_path = os.path.join(current_dir, "data", "corporate_quotes.json")
@@ -402,7 +420,6 @@ def add_corporate_quote():
             with open(json_path, "r", encoding="utf-8") as f:
                 quotes = json.load(f)
                 
-        new_quote = request.json or {}
         quotes.insert(0, new_quote)
         
         with open(json_path, "w", encoding="utf-8") as f:
@@ -414,13 +431,22 @@ def add_corporate_quote():
 
 @app.route("/api/corporate-quotes/update", methods=["POST"])
 def update_corporate_quote():
+    data = request.json or {}
+    quote_id = data.get("id")
+    new_status = data.get("estado")
+    
+    try:
+        # Update Supabase first
+        supabase.table("corporate_quotes").update({"estado": new_status}).eq("id", quote_id).execute()
+        response = supabase.table("corporate_quotes").select("*").order("fecha", desc=True).execute()
+        if response.data is not None:
+            return jsonify({"success": True, "quotes": response.data}), 200
+    except Exception as e:
+        print(f"Supabase UPDATE corporate-quotes error: {e}. Falling back to local JSON.")
+
     try:
         current_dir = os.path.dirname(os.path.abspath(__file__))
         json_path = os.path.join(current_dir, "data", "corporate_quotes.json")
-        
-        data = request.json or {}
-        quote_id = data.get("id")
-        new_status = data.get("estado")
         
         import json
         if os.path.exists(json_path):
