@@ -335,7 +335,7 @@ export const Dashboard: React.FC = () => {
               <span className={`material-symbols-outlined text-[16px] notranslate ${isScanning ? 'animate-spin' : ''}`} translate="no">
                 {isScanning ? 'autorenew' : 'auto_awesome'}
               </span>
-              {isScanning ? 'Escaneando SEACE...' : 'Buscar Nuevas con IA'}
+              {isScanning ? 'Escaneando SEACE...' : 'Buscar'}
             </button>
           </div>
 

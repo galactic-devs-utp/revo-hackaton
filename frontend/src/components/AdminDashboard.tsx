@@ -58,9 +58,7 @@ export const AdminDashboard: React.FC = () => {
       {/* CABECERA */}
       <div className="bg-white border border-[#E7E7E1] p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <span className="text-[9px] font-bold uppercase tracking-wider text-[#123524] bg-[#E4F5E7] px-2.5 py-1 rounded-full">
-            Panel de Control del Administrador
-          </span>
+          
           <h2 className="text-2xl font-extrabold text-[#123524] mt-2 tracking-tight">Consola de Operaciones RevoLink</h2>
           <p className="text-xs text-[#5B6570] mt-0.5">
             Supervise solicitudes de cotización corporativas y controle el flujo de valorización.
@@ -68,29 +66,7 @@ export const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* METRICAS DE OPERACION */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-          <div className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide">Solicitudes Recibidas</div>
-          <p className="text-2xl font-extrabold tracking-tight mt-1 text-[#123524]">{quotes.length}</p>
-          <span className="text-[10px] text-emerald-600 font-medium">↑ 2 nuevas hoy</span>
-        </div>
-        <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-          <div className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide">Despachado este Mes</div>
-          <p className="text-2xl font-extrabold tracking-tight mt-1 text-[#123524]">237.7 Ton</p>
-          <span className="text-[10px] text-[#5B6570]">Meta mensual: 300 Ton</span>
-        </div>
-        <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-          <div className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide">Mitigación Co2 Total</div>
-          <p className="text-2xl font-extrabold tracking-tight mt-1 text-[#123524]">142.9 Tn CO₂</p>
-          <span className="text-[10px] text-emerald-600 font-medium">Equivalente a 8,200 árboles</span>
-        </div>
-        <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-          <div className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide">Ingreso Estimado</div>
-          <p className="text-2xl font-extrabold tracking-tight mt-1 text-[#123524]">S/. 657,000</p>
-          <span className="text-[10px] text-[#5B6570]">En cotizaciones B2B activas</span>
-        </div>
-      </div>
+      
 
       {/* DETALLE DE SOLICITUDES DE COTIZACIÓN */}
       <div className="bg-white border border-[#E7E7E1] rounded-2xl shadow-sm overflow-hidden">
