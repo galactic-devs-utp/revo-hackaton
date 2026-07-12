@@ -5,7 +5,7 @@ import { ChatMessage } from './components/ChatMessage';
 import type { Message } from './components/ChatMessage';
 import { ProductsSimulator } from './components/ProductsSimulator';
 import { Login } from './components/Login';
-import { AdminDashboard } from './components/AdminDashboard';
+import { Dashboard } from './components/Dashboard';
 
 interface Opportunity {
   id: number;
@@ -317,7 +317,7 @@ export const App: React.FC = () => {
       case 'admin_dashboard':
         return (
           <div className="pt-[88px] pb-[100px] animate-fadeIn">
-            <AdminDashboard />
+            <Dashboard />
           </div>
         );
       case 'store':
@@ -352,7 +352,7 @@ export const App: React.FC = () => {
       {renderContent()}
       
       {userRole === 'user' && (
-        <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
+        <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} userRole={userRole} />
       )}
 
       {/* FLOATING CHAT WIDGET - Only for Client Users */}

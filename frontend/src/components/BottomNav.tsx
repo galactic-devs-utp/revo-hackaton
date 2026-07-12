@@ -3,15 +3,19 @@ import React from 'react';
 interface BottomNavProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  userRole?: 'user' | 'admin' | null;
 }
 
-export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab }) => {
+export const BottomNav: React.FC<BottomNavProps> = ({ activeTab, setActiveTab, userRole }) => {
   const tabs = [
     { id: 'dashboard', label: 'Inicio', icon: 'dashboard' },
     { id: 'store', label: 'Tienda', icon: 'storefront' },
     { id: 'cart', label: 'Carrito', icon: 'shopping_cart' },
     { id: 'profile', label: 'Perfil', icon: 'person' },
-  ];
+  ].filter(tab => {
+    if (userRole === 'user' && tab.id === 'dashboard') return false;
+    return true;
+  });
 
   return (
     <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface shadow-[0_-4px_16px_rgba(0,0,0,0.05)] rounded-t-xl md:hidden border-t border-outline-variant/30">

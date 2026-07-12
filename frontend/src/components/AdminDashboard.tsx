@@ -54,7 +54,7 @@ export const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="pt-[88px] pb-[100px] px-4 md:px-8 max-w-7xl mx-auto space-y-8 animate-fadeIn">
+    <div className="space-y-8 animate-fadeIn">
       {/* CABECERA */}
       <div className="bg-white border border-[#E7E7E1] p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
