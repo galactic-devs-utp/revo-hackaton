@@ -16,9 +16,29 @@ export interface Tender {
   correo_contacto?: string;
 }
 
+const MOCK_SENT_QUOTES = [
+  {
+    id: 'COT-SEACE-892',
+    proyecto: 'Mejoras de Carpeta de Pavimento - Ciclovías',
+    entidad: 'Municipalidad Distrital de San Isidro',
+    monto: 'S/. 160,000',
+    fecha: '2026-07-05',
+    estado: 'En Proceso'
+  },
+  {
+    id: 'COT-SEACE-891',
+    proyecto: 'Conservación tramo Chiclayo - Piura NFU',
+    entidad: 'PROVIAS NACIONAL (MTC)',
+    monto: 'S/. 4,200,000',
+    fecha: '2026-07-08',
+    estado: 'Pendiente'
+  }
+];
+
 export const Dashboard: React.FC = () => {
   const [tenders, setTenders] = useState<Tender[]>([]);
   const [products, setProducts] = useState<any[]>([]);
+  const [sentQuotes, setSentQuotes] = useState<any[]>(MOCK_SENT_QUOTES);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('matchmaking');
   const [searchQuery, setSearchQuery] = useState('');
@@ -170,6 +190,7 @@ export const Dashboard: React.FC = () => {
   };
 
   const handleCotizar = async (tenderId: string) => {
+    const tender = tenders.find(t => t.id === tenderId);
     try {
       const res = await fetch('http://localhost:5000/api/quote', {
         method: 'POST',
@@ -185,6 +206,18 @@ export const Dashboard: React.FC = () => {
       setTenders(prev => prev.map(t =>
         t.id === tenderId ? { ...t, estado: 'pendiente' as const } : t
       ));
+    }
+
+    if (tender) {
+      const newSentQuote = {
+        id: `COT-SEACE-${Math.floor(100 + Math.random() * 900)}`,
+        proyecto: tender.proyecto,
+        entidad: tender.contratista,
+        monto: tender.presupuesto || 'S/. 0',
+        fecha: new Date().toISOString().split('T')[0],
+        estado: 'Pendiente'
+      };
+      setSentQuotes(prev => [newSentQuote, ...prev]);
     }
   };
 
@@ -467,11 +500,49 @@ export const Dashboard: React.FC = () => {
 
       {/* Historial Tab */}
       {activeTab === 'historial' && (
-        <div className="px-6 max-w-7xl mx-auto w-full">
-          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center shadow-sm">
-            <span className="material-symbols-outlined text-[48px] text-gray-300 notranslate" translate="no">history</span>
-            <h3 className="text-lg font-semibold text-gray-700 mt-3">Historial de Cotizaciones</h3>
-            <p className="text-sm text-gray-500 mt-1">Registro de propuestas comerciales enviadas.</p>
+        <div className="px-6 max-w-7xl mx-auto w-full space-y-6">
+          <div className="bg-slate-800 rounded-xl p-6">
+            <h2 className="text-white font-semibold text-sm">Historial de Ofertas Comerciales (Enviadas proactivamente al SEACE)</h2>
+            <p className="text-gray-400 text-xs mt-1">
+              Registro histórico de las propuestas comerciales y de suministro sostenible enviadas a las constructoras contratistas del Estado.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100 text-gray-500 font-bold">
+                    <th className="px-6 py-3.5">Código Cotización</th>
+                    <th className="px-6 py-3.5">Proyecto Destino</th>
+                    <th className="px-6 py-3.5">Entidad Requiriente</th>
+                    <th className="px-6 py-3.5">Monto Ofertado</th>
+                    <th className="px-6 py-3.5">Fecha de Envío</th>
+                    <th className="px-6 py-3.5 text-center">Estado de Oferta</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {sentQuotes.map((quote) => (
+                    <tr key={quote.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 font-mono font-bold text-gray-800">{quote.id}</td>
+                      <td className="px-6 py-4 font-semibold text-gray-700">{quote.proyecto}</td>
+                      <td className="px-6 py-4 text-gray-600">{quote.entidad}</td>
+                      <td className="px-6 py-4 font-mono font-bold text-gray-800">{quote.monto}</td>
+                      <td className="px-6 py-4 text-gray-500">{quote.fecha}</td>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                          quote.estado === 'Aprobada' ? 'bg-[#E4F5E7] text-[#2E9E5B]' :
+                          quote.estado === 'En Proceso' ? 'bg-blue-50 text-blue-600' :
+                          'bg-amber-50 text-amber-600'
+                        }`}>
+                          {quote.estado}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
