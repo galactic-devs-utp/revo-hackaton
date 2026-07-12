@@ -237,13 +237,16 @@ MOCK_OPPORTUNITIES = [
 def main():
     print("Iniciando carga de oportunidades del SEACE...")
     
+    # Cap the opportunities to 40 max to protect Supabase free tier limits
+    capped_opportunities = MOCK_OPPORTUNITIES[:40]
+    
     # Ensure directory exists
     os.makedirs(os.path.join(os.path.dirname(__file__), "data"), exist_ok=True)
     local_path = os.path.join(os.path.dirname(__file__), "data", "seace_opportunities.json")
     
     # Always save to local JSON file as a reliable source of truth
     with open(local_path, "w", encoding="utf-8") as f:
-        json.dump(MOCK_OPPORTUNITIES, f, ensure_ascii=False, indent=2)
+        json.dump(capped_opportunities, f, ensure_ascii=False, indent=2)
     print(f"Oportunidades guardadas exitosamente en local: {local_path}")
 
     # Try to push to Supabase if credentials are valid
@@ -253,7 +256,7 @@ def main():
             supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
             
             # Insert or update each opportunity
-            for opp in MOCK_OPPORTUNITIES:
+            for opp in capped_opportunities:
                 # Check if it already exists
                 res = supabase.table("seace_opportunities").select("id").eq("id", opp["id"]).execute()
                 if res.data and len(res.data) > 0:
