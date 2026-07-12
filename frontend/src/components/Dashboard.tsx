@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AdminDashboard } from './AdminDashboard';
+import { supabase } from '../supabaseClient';
 
 export interface Tender {
   id: string;
@@ -16,13 +17,44 @@ export interface Tender {
 
 export const Dashboard: React.FC = () => {
   const [tenders, setTenders] = useState<Tender[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('matchmaking');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchDashboardData();
+    fetchProducts();
   }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const { data, error } = await supabase.from("products").select("*");
+      if (error) throw error;
+      if (data) {
+        setProducts(data);
+      }
+    } catch (err) {
+      console.error("Error loading products for admin inventory:", err);
+    }
+  };
+
+  const handleUpdateProduct = async (productId: string, field: 'price' | 'stock', value: number) => {
+    try {
+      const { error } = await supabase
+        .from("products")
+        .update({ [field]: value })
+        .eq("id", productId);
+      if (error) throw error;
+      
+      setProducts(prev => prev.map(p => p.id === productId ? { ...p, [field]: value } : p));
+      alert(`Producto actualizado exitosamente.`);
+    } catch (err) {
+      // Fallback local update
+      setProducts(prev => prev.map(p => p.id === productId ? { ...p, [field]: value } : p));
+      alert(`Actualización local simulada.`);
+    }
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -252,11 +284,79 @@ export const Dashboard: React.FC = () => {
 
       {/* Inventario Tab */}
       {activeTab === 'inventario' && (
-        <div className="px-6 max-w-7xl mx-auto w-full">
-          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center shadow-sm">
-            <span className="material-symbols-outlined text-[48px] text-gray-300 notranslate" translate="no">inventory_2</span>
-            <h3 className="text-lg font-semibold text-gray-700 mt-3">Inventario y Precios</h3>
-            <p className="text-sm text-gray-500 mt-1">Gestión de stock y precios de productos reciclados.</p>
+        <div className="px-6 max-w-7xl mx-auto w-full space-y-6">
+          <div className="bg-slate-800 rounded-xl p-6">
+            <h2 className="text-white font-semibold text-sm">Inventario de Productos en Tiempo Real (Supabase)</h2>
+            <p className="text-gray-400 text-xs mt-1">
+              Modifique precios y cantidades de stock. Los cambios se actualizarán instantáneamente para todos los clientes en la tienda.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-gray-50 border-b border-gray-100 text-gray-500 font-bold">
+                    <th className="px-6 py-3.5">Imagen</th>
+                    <th className="px-6 py-3.5">Nombre del Producto</th>
+                    <th className="px-6 py-3.5">Precio B2B</th>
+                    <th className="px-6 py-3.5">Stock Disponible</th>
+                    <th className="px-6 py-3.5">Unidad</th>
+                    <th className="px-6 py-3.5 text-center">Acciones de Ajuste</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {products.map((prod) => (
+                    <tr key={prod.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <img 
+                          src={prod.image_path || "https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?auto=format&fit=crop&w=100&q=80"} 
+                          alt={prod.name} 
+                          className="w-12 h-12 object-cover rounded-lg border border-gray-200"
+                        />
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="font-bold text-gray-800 text-sm">{prod.name}</div>
+                        <div className="text-[10px] text-gray-400 max-w-[250px] truncate">{prod.description}</div>
+                      </td>
+                      <td className="px-6 py-4 font-mono font-bold text-gray-800 text-sm">
+                        S/. {prod.price}
+                      </td>
+                      <td className="px-6 py-4 font-mono text-gray-700">
+                        {prod.stock}
+                      </td>
+                      <td className="px-6 py-4 text-gray-500">{prod.unit}</td>
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex justify-center gap-2">
+                          <button
+                            onClick={() => {
+                              const newPrice = parseFloat(prompt(`Ingrese nuevo precio para ${prod.name}:`, prod.price.toString()) || "");
+                              if (!isNaN(newPrice) && newPrice > 0) {
+                                handleUpdateProduct(prod.id, 'price', newPrice);
+                              }
+                            }}
+                            className="border border-emerald-500 hover:bg-emerald-50 text-emerald-600 px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-all"
+                          >
+                            Editar Precio
+                          </button>
+                          <button
+                            onClick={() => {
+                              const newStock = parseInt(prompt(`Ingrese nuevo stock para ${prod.name}:`, prod.stock.toString()) || "");
+                              if (!isNaN(newStock) && newStock >= 0) {
+                                handleUpdateProduct(prod.id, 'stock', newStock);
+                              }
+                            }}
+                            className="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-all shadow-sm"
+                          >
+                            Ajustar Stock
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
