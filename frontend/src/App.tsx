@@ -407,12 +407,30 @@ export const App: React.FC = () => {
                     <p className="text-[9px] text-[#2E9E5B] font-semibold">Online • Soporte Circular</p>
                   </div>
                 </div>
-                <button 
-                  onClick={() => setIsChatOpen(false)}
-                  className="text-[#96A0A8] hover:text-[#14181A] text-sm font-bold flex items-center justify-center p-1 hover:bg-slate-100 rounded-full transition-colors"
-                >
-                  ✕
-                </button>
+                <div className="flex items-center gap-1">
+                  {messages.length > 1 && (
+                    <button
+                      onClick={() => setMessages([
+                        {
+                          id: 'welcome',
+                          sender: 'assistant',
+                          content: 'Hola, soy **SofiA**, el asistente virtual de **RevoLink**. Puedo ayudarte con consultas técnicas y regulatorias (D.S. 024-2021-MINAM) de economía circular de neumáticos fuera de uso.',
+                          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                        }
+                      ])}
+                      title="Reiniciar conversación"
+                      className="text-[#96A0A8] hover:text-[#123524] p-1.5 rounded-full hover:bg-slate-100 transition-colors flex items-center justify-center"
+                    >
+                      <span className="material-symbols-outlined text-[16px] notranslate" translate="no">restart_alt</span>
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => setIsChatOpen(false)}
+                    className="text-[#96A0A8] hover:text-[#14181A] text-sm font-bold flex items-center justify-center p-1.5 hover:bg-slate-100 rounded-full transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
               </div>
 
               {/* Message Area */}
