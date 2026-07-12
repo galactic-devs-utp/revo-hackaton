@@ -81,8 +81,14 @@ export const Login: React.FC<LoginProps> = ({ onLogin }) => {
       </div>
 
       {/* SECCIÓN DERECHA: Formulario de Login */}
-      <div className="col-span-1 lg:col-span-6 flex items-center justify-center p-6 sm:p-12">
-        <div className="w-full max-w-md bg-white border border-[#E7E7E1] rounded-3xl p-8 sm:p-10 shadow-lg space-y-8 animate-fadeIn">
+      <div 
+        className="col-span-1 lg:col-span-6 flex items-center justify-center p-6 sm:p-12 bg-cover bg-center relative"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=1200&q=80')" }}
+      >
+        {/* Filtro suave con desenfoque de fondo */}
+        <div className="absolute inset-0 bg-[#F7F7F2]/80 backdrop-blur-sm z-0"></div>
+
+        <div className="w-full max-w-md bg-white border border-[#E7E7E1] rounded-3xl p-8 sm:p-10 shadow-lg space-y-8 animate-fadeIn z-10">
           {/* HEADER LOGIN */}
           <div className="text-center space-y-2">
             <div className="flex items-center justify-center gap-2 lg:hidden">
