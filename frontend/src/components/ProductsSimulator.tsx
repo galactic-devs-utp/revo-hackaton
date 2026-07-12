@@ -137,7 +137,7 @@ export const ProductsSimulator: React.FC = () => {
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [activeStep, setActiveStep] = useState<number>(1);
   const [maxStep, setMaxStep] = useState<number>(1);
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false);
 
   // Form states
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
@@ -200,6 +200,7 @@ export const ProductsSimulator: React.FC = () => {
     }
     setActiveStep(1);
     setMaxStep(1);
+    setIsDetailOpen(true);
   };
 
   const handleNextStep = (next: number) => {
@@ -242,55 +243,55 @@ export const ProductsSimulator: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  return (
-    <div className="bg-[#F7F7F2] text-[#14181A] font-sans min-h-screen py-6 px-4 md:px-8">
-      {/* FRANJA DE INDICADORES */}
-      <section className="max-w-7xl mx-auto mb-8">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-            <div className="w-8 h-8 rounded-lg bg-[#F4FAE0] flex items-center justify-center mb-3">
-              <span className="text-[#9EB93A] font-bold text-sm">🌎</span>
+  const renderCatalogView = () => {
+    return (
+      <div className="animate-fadeIn">
+        {/* FRANJA DE INDICADORES */}
+        <section className="max-w-7xl mx-auto mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-[#F4FAE0] flex items-center justify-center mb-3">
+                <span className="text-[#9EB93A] font-bold text-sm">🌎</span>
+              </div>
+              <p className="text-xl sm:text-2xl font-extrabold tracking-tight">3</p>
+              <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Países LATAM</p>
             </div>
-            <p className="text-xl sm:text-2xl font-extrabold tracking-tight">3</p>
-            <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Países LATAM</p>
-          </div>
-          <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-            <div className="w-8 h-8 rounded-lg bg-[#E4F5E7] flex items-center justify-center mb-3">
-              <span className="text-[#2E9E5B] font-bold text-sm">🔥</span>
+            <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-[#E4F5E7] flex items-center justify-center mb-3">
+                <span className="text-[#2E9E5B] font-bold text-sm">🔥</span>
+              </div>
+              <p className="text-xl sm:text-2xl font-extrabold tracking-tight">150+</p>
+              <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Campañas Activas</p>
             </div>
-            <p className="text-xl sm:text-2xl font-extrabold tracking-tight">150+</p>
-            <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Campañas Activas</p>
-          </div>
-          <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-            <div className="w-8 h-8 rounded-lg bg-[#F4FAE0] flex items-center justify-center mb-3">
-              <span className="text-[#9EB93A] font-bold text-sm">🌱</span>
+            <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-[#F4FAE0] flex items-center justify-center mb-3">
+                <span className="text-[#9EB93A] font-bold text-sm">🌱</span>
+              </div>
+              <p className="text-xl sm:text-2xl font-extrabold tracking-tight">32,000+</p>
+              <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Toneladas Procesadas</p>
             </div>
-            <p className="text-xl sm:text-2xl font-extrabold tracking-tight">32,000+</p>
-            <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Toneladas Procesadas</p>
-          </div>
-          <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-            <div className="w-8 h-8 rounded-lg bg-[#E4F5E7] flex items-center justify-center mb-3">
-              <span className="text-[#2E9E5B] font-bold text-sm">⚙️</span>
+            <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-[#E4F5E7] flex items-center justify-center mb-3">
+                <span className="text-[#2E9E5B] font-bold text-sm">⚙️</span>
+              </div>
+              <p className="text-xl sm:text-2xl font-extrabold tracking-tight">4</p>
+              <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Materiales Homologados</p>
             </div>
-            <p className="text-xl sm:text-2xl font-extrabold tracking-tight">4</p>
-            <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Materiales Homologados</p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CONTENIDO PRINCIPAL */}
-      <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
-        {/* SECCIÓN IZQUIERDA: Catálogo de Materiales */}
-        <div className="lg:col-span-7 space-y-6">
+        {/* CONTENIDO DEL CATÁLOGO */}
+        <div className="max-w-7xl mx-auto space-y-6">
           <div>
-            
-            <h2 className="text-2xl font-extrabold tracking-tight text-[#14181A] mt-3">
-Catálogo Homologado            </h2>
-            
+            <h2 className="text-2xl font-extrabold tracking-tight text-[#14181A]">
+              Catálogo Homologado
+            </h2>
+            <p className="text-xs text-[#5B6570] mt-1">
+              Seleccione una materia prima homologada para ver sus especificaciones, aplicaciones y simular su cotización.
+            </p>
           </div>
 
-          {/* GRID DE TARJETAS DE PRODUCTOS */}
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {products.map((prod) => {
               const config = LOCAL_PRODUCTS_CONFIG[prod.name] || {
                 key: prod.id,
@@ -301,114 +302,54 @@ Catálogo Homologado            </h2>
                 projects: []
               };
 
-              const isSelected = prod.id === selectedProductId;
-              const isExpanded = expandedCardId === prod.id;
-
               return (
                 <div
                   key={prod.id}
                   onClick={() => handleProductSelect(prod.id, prod.name)}
-                  className={`bg-white border rounded-xl p-5 transition-all duration-300 cursor-pointer shadow-sm hover:border-[#123524]/40 hover:shadow-md ${
-                    isSelected ? 'border-[#123524] ring-1 ring-[#123524]/20 bg-[#FCFCFA]' : 'border-[#E7E7E1]'
-                  }`}
+                  className="bg-white border border-[#E7E7E1] rounded-2xl overflow-hidden hover:shadow-lg hover:border-[#123524]/40 transition-all duration-300 cursor-pointer flex flex-col sm:flex-row group"
                 >
-                  <div className="flex flex-col sm:flex-row gap-5">
-                    <div className="sm:w-1/3 aspect-[16/10] overflow-hidden rounded-lg border border-[#E7E7E1] bg-[#F7F7F2] flex-shrink-0 relative">
-                      <img
-                        src={prod.image_path || config.imageFallback}
-                        alt={prod.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = config.imageFallback;
-                        }}
-                      />
-                      <span className={`absolute top-2 left-2 text-[9px] font-bold px-2 py-0.5 rounded-full ${
-                        config.badgeText.includes("Stock") ? 'bg-[#C6E24C] text-[#123524]' : 'bg-amber-600 text-white'
-                      }`}>
-                        {config.badgeText}
-                      </span>
-                    </div>
-
-                    <div className="flex-grow flex flex-col justify-between">
-                      <div>
-                        <div className="flex justify-between items-baseline">
-                          <span className="text-[9px] font-bold uppercase tracking-wider text-[#123524] bg-[#E4F5E7] px-2 py-0.5 rounded-full">
-                            {config.category}
-                          </span>
-                          <span className="text-sm font-bold text-[#14181A]">
-                            ${prod.price.toFixed(2)}
-                            <span className="text-[10px] text-[#96A0A8] font-normal">
-                              {" "}USD/{prod.unit === 'galón' ? 'Gal' : 'Ton'}
-                            </span>
-                          </span>
-                        </div>
-                        <h3 className="text-base font-bold text-[#14181A] mt-1">
-                          {prod.name}
-                        </h3>
-                        <p className="text-xs text-[#5B6570] mt-1 leading-relaxed">
-                          {prod.description}
-                        </p>
-                      </div>
-
-                      <div className="mt-3 pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setExpandedCardId(isExpanded ? null : prod.id);
-                          }}
-                          className="text-[#123524] hover:text-[#0B2A1B] font-semibold flex items-center gap-1 transition-colors"
-                        >
-                          Ficha Técnica Comercial {isExpanded ? '↑' : '↓'}
-                        </button>
-                        <span className="text-[#96A0A8] font-mono">
-                          {prod.name.includes("Caucho") ? "Malla: 0.5mm - 2mm" : `Unidad: ${prod.unit}s`}
-                        </span>
-                      </div>
-                    </div>
+                  <div className="sm:w-2/5 aspect-[16/10] sm:aspect-auto overflow-hidden bg-[#F7F7F2] relative flex-shrink-0">
+                    <img
+                      src={prod.image_path || config.imageFallback}
+                      alt={prod.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = config.imageFallback;
+                      }}
+                    />
+                    <span className="absolute top-3 left-3 text-[9px] font-bold px-2.5 py-0.5 rounded-full bg-[#123524] text-white">
+                      {config.badgeText}
+                    </span>
                   </div>
 
-                  {/* Ficha Técnica Comercial */}
-                  {isExpanded && (
-                    <div className="mt-4 p-4 bg-[#E4F5E7] rounded-lg text-xs text-[#5B6570] border border-[#2E9E5B]/15 space-y-3">
-                      <div className="grid grid-cols-2 gap-2 border-b border-[#2E9E5B]/10 pb-2 text-[#14181A]">
-                        <div>
-                          <strong>Normativa Técnica:</strong> Homologado bajo estándares B2B.
-                        </div>
-                        <div>
-                          <strong>Uso recomendado:</strong> {prod.usage}
-                        </div>
+                  <div className="p-5 flex-grow flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-baseline">
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-[#123524] bg-[#E4F5E7] px-2 py-0.5 rounded-full">
+                          {config.category}
+                        </span>
+                        <span className="text-sm font-bold text-[#14181A]">
+                          ${prod.price.toFixed(2)}
+                          <span className="text-[10px] text-[#96A0A8] font-normal">
+                            {" "}USD/{prod.unit === 'galón' ? 'Gal' : 'Ton'}
+                          </span>
+                        </span>
                       </div>
-                      <div>
-                        <strong className="text-[#14181A] block mb-0.5">Ventajas Técnicas:</strong>
-                        <ul className="list-disc pl-4 space-y-1">
-                          {prod.characteristics.map((char, index) => (
-                            <li key={index}>{char}</li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Aplicaciones de Economía Circular */}
-                      <div className="pt-3 border-t border-[#2E9E5B]/10">
-                        <strong className="text-[#14181A] block mb-2">Aplicaciones de Economía Circular:</strong>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {(PRODUCT_APPLICATIONS[prod.name] || []).map((app, idx) => (
-                            <div key={idx} className="relative rounded-lg overflow-hidden border border-slate-200/50 group h-28">
-                              <img 
-                                src={app.image} 
-                                alt={app.label} 
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2">
-                                <span className="text-[10px] font-bold text-white leading-tight">
-                                  {app.label}
-                                </span>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                      <h3 className="text-base font-bold text-[#14181A] group-hover:text-[#123524] transition-colors">
+                        {prod.name}
+                      </h3>
+                      <p className="text-xs text-[#5B6570] line-clamp-2 leading-relaxed">
+                        {prod.description}
+                      </p>
                     </div>
-                  )}
+
+                    <div className="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-[10px] font-bold text-[#123524]">
+                      <span>Ver Detalles y Cotizar ➔</span>
+                      <span className="text-[#96A0A8] font-mono font-normal">
+                        {prod.name.includes("Caucho") ? "Malla: 0.5-2mm" : "F.O.B."}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               );
             })}
@@ -459,179 +400,288 @@ Catálogo Homologado            </h2>
             </div>
           </div>
         </div>
+      </div>
+    );
+  };
 
-        {/* SECCIÓN DERECHA: Consola de Simulación */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="bg-white border border-[#E7E7E1] rounded-xl p-5 shadow-sm lg:sticky lg:top-24 space-y-4">
-            <div className="pb-2 border-b border-slate-100">
-              <h3 className="text-[10px] font-bold text-[#96A0A8] uppercase tracking-wider">
-                Consola de Demanda Corporativa
-              </h3>
-              <p className="text-sm font-semibold text-[#14181A] mt-0.5">
-                Línea seleccionada:{" "}
-                <span className="text-[#2E9E5B]">{selectedProduct?.name || "--"}</span>
-              </p>
+  const renderDetailView = () => {
+    if (!selectedProduct || !selectedProductConfig) return null;
+
+    const bannerImage = PRODUCT_APPLICATIONS[selectedProduct.name]?.[0]?.image || selectedProduct.image_path;
+    const bannerLabel = PRODUCT_APPLICATIONS[selectedProduct.name]?.[0]?.label || selectedProduct.name;
+
+    return (
+      <div className="animate-fadeIn max-w-7xl mx-auto space-y-6">
+        {/* HEADER DE NAVEGACIÓN */}
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setIsDetailOpen(false)}
+            className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#123524] bg-white border border-[#E7E7E1] hover:bg-slate-50 px-4 py-2.5 rounded-lg shadow-sm transition-all"
+          >
+            ← Volver al Catálogo
+          </button>
+        </div>
+
+        {/* BANNER SUPERIOR */}
+        <div className="relative h-56 sm:h-72 md:h-80 rounded-2xl overflow-hidden shadow-md">
+          <img
+            src={bannerImage}
+            alt={bannerLabel}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10 flex flex-col justify-end p-6 sm:p-8 text-white">
+            <span className="text-[10px] font-bold uppercase tracking-wider bg-[#C6E24C] text-[#123524] px-2.5 py-1 rounded-full w-max">
+              {selectedProductConfig.category}
+            </span>
+            <h2 className="text-xl sm:text-3xl font-extrabold tracking-tight mt-2.5">
+              Aplicación: {bannerLabel}
+            </h2>
+            <p className="text-[11px] sm:text-xs text-slate-200 mt-1 max-w-xl">
+              Transformando neumáticos fuera de uso en soluciones circulares e infraestructura industrial.
+            </p>
+          </div>
+        </div>
+
+        {/* GRID DE DOS COLUMNAS */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
+          {/* COLUMNA IZQUIERDA: Especificaciones y Soluciones */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="bg-white border border-[#E7E7E1] rounded-2xl p-6 shadow-sm space-y-4">
+              <div>
+                <span className="text-[9px] font-bold uppercase tracking-wider text-[#123524] bg-[#E4F5E7] px-2 py-0.5 rounded-full">
+                  Ficha Técnica Comercial
+                </span>
+                <h3 className="text-xl font-bold text-[#14181A] mt-2">
+                  {selectedProduct.name}
+                </h3>
+                <p className="text-xs text-[#5B6570] mt-1.5 leading-relaxed">
+                  {selectedProduct.description}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 pt-4 text-xs">
+                <div className="bg-[#F7F7F2] p-3 rounded-lg border border-[#E7E7E1]">
+                  <strong className="text-[#14181A] block mb-1">Normativa Técnica</strong>
+                  <p className="text-[#5B6570] text-[11px]">Homologado bajo estándares B2B e indicadores del MINAM.</p>
+                </div>
+                <div className="bg-[#F7F7F2] p-3 rounded-lg border border-[#E7E7E1]">
+                  <strong className="text-[#14181A] block mb-1">Uso Recomendado</strong>
+                  <p className="text-[#5B6570] text-[11px]">{selectedProduct.usage}</p>
+                </div>
+              </div>
+
+              <div className="border-t border-slate-100 pt-4">
+                <strong className="text-xs font-bold text-[#14181A] block mb-2">Ventajas Técnicas y Propiedades:</strong>
+                <ul className="list-disc pl-4 space-y-1 text-xs text-[#5B6570]">
+                  {selectedProduct.characteristics.map((char, index) => (
+                    <li key={index}>{char}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
-            {/* PASO 1 */}
-            <div className={`border border-[#E7E7E1] rounded-lg overflow-hidden transition-all duration-300`}>
-              <button
-                onClick={() => handleGoToStep(1)}
-                className="w-full bg-[#F7F7F2] px-4 py-3 text-left text-xs font-bold text-[#14181A] flex justify-between items-center outline-none"
-              >
-                <span>01. Aplicación del Proyecto e Insumos</span>
-                <span className={`text-[9px] font-medium px-2 py-0.5 rounded ${
-                  activeStep === 1 ? 'bg-[#123524] text-white' : 'bg-slate-200 text-[#5B6570]'
-                }`}>
-                  {activeStep === 1 ? 'Activo' : 'Completado'}
-                </span>
-              </button>
-
-              {activeStep === 1 && selectedProductConfig && (
-                <div className="p-4 space-y-3 bg-white">
-                  <div>
-                    <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">
-                      Destino de la Materia Prima
-                    </label>
-                    <select
-                      value={selectedProjectId}
-                      onChange={(e) => setSelectedProjectId(e.target.value)}
-                      className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-lg p-2.5 text-xs font-medium text-[#14181A] focus:border-[#123524] focus:bg-white outline-none transition-all"
-                    >
-                      {selectedProductConfig.projects.map((proj) => (
-                        <option key={proj.id} value={proj.id}>{proj.name}</option>
-                      ))}
-                    </select>
+            {/* APLICACIONES DE ECONOMÍA CIRCULAR */}
+            <div className="bg-white border border-[#E7E7E1] rounded-2xl p-6 shadow-sm space-y-4">
+              <h4 className="text-xs font-bold text-[#14181A] uppercase tracking-wider">
+                Galería de Conversiones y Casos de Uso
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {(PRODUCT_APPLICATIONS[selectedProduct.name] || []).map((app, idx) => (
+                  <div key={idx} className="relative rounded-xl overflow-hidden border border-slate-200/50 group h-36">
+                    <img 
+                      src={app.image} 
+                      alt={app.label} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                      <span className="text-xs font-bold text-white leading-tight">
+                        {app.label}
+                      </span>
+                    </div>
                   </div>
+                ))}
+              </div>
+            </div>
+          </div>
 
-                  {selectedProject && (
+          {/* COLUMNA DERECHA: Consola de Demanda */}
+          <div className="lg:col-span-5 space-y-4">
+            <div className="bg-white border border-[#E7E7E1] rounded-xl p-5 shadow-sm space-y-4">
+              <div className="pb-2 border-b border-slate-100">
+                <h3 className="text-[10px] font-bold text-[#96A0A8] uppercase tracking-wider">
+                  Consola de Demanda Corporativa
+                </h3>
+                <p className="text-xs font-semibold text-[#14181A] mt-0.5">
+                  Línea de Suministro: <span className="text-[#2E9E5B]">{selectedProduct.name}</span>
+                </p>
+              </div>
+
+              {/* PASO 1 */}
+              <div className="border border-[#E7E7E1] rounded-lg overflow-hidden">
+                <button
+                  onClick={() => handleGoToStep(1)}
+                  className="w-full bg-[#F7F7F2] px-4 py-3 text-left text-xs font-bold text-[#14181A] flex justify-between items-center outline-none"
+                >
+                  <span>01. Aplicación del Proyecto e Insumos</span>
+                  <span className={`text-[9px] font-medium px-2 py-0.5 rounded ${
+                    activeStep === 1 ? 'bg-[#123524] text-white' : 'bg-slate-200 text-[#5B6570]'
+                  }`}>
+                    {activeStep === 1 ? 'Activo' : 'Completado'}
+                  </span>
+                </button>
+
+                {activeStep === 1 && (
+                  <div className="p-4 space-y-3 bg-white">
                     <div>
                       <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">
-                        {selectedProject.label}
+                        Destino de la Materia Prima
                       </label>
-                      <div className="relative">
-                        <input
-                          type="number"
-                          value={dimensionInput}
-                          onChange={(e) => setDimensionInput(Math.max(1, parseInt(e.target.value) || 0))}
-                          min="1"
-                          className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-lg p-2.5 text-xs font-mono font-bold text-[#14181A] focus:border-[#123524] focus:bg-white outline-none transition-all"
-                        />
-                        <span className="absolute right-3 top-2.5 text-xs font-bold text-[#96A0A8]">
-                          {selectedProject.badge}
+                      <select
+                        value={selectedProjectId}
+                        onChange={(e) => setSelectedProjectId(e.target.value)}
+                        className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-lg p-2.5 text-xs font-medium text-[#14181A] focus:border-[#123524] focus:bg-white outline-none transition-all"
+                      >
+                        {selectedProductConfig.projects.map((proj) => (
+                          <option key={proj.id} value={proj.id}>{proj.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {selectedProject && (
+                      <div>
+                        <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">
+                          {selectedProject.label}
+                        </label>
+                        <div className="relative">
+                          <input
+                            type="number"
+                            value={dimensionInput}
+                            onChange={(e) => setDimensionInput(Math.max(1, parseInt(e.target.value) || 0))}
+                            min="1"
+                            className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-lg p-2.5 text-xs font-mono font-bold text-[#14181A] focus:border-[#123524] focus:bg-white outline-none transition-all"
+                          />
+                          <span className="absolute right-3 top-2.5 text-xs font-bold text-[#96A0A8]">
+                            {selectedProject.badge}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="text-[11px] text-[#5B6570] leading-relaxed bg-[#F7F7F2] p-3 rounded border border-[#E7E7E1] italic">
+                      {selectedProject?.info}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleNextStep(2)}
+                      className="w-full bg-[#123524] hover:bg-[#0B2A1B] text-white font-medium py-2 rounded text-xs tracking-wide uppercase transition-all"
+                    >
+                      Calcular Métricas ➔
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* PASO 2 */}
+              <div className={`border border-[#E7E7E1] rounded-lg overflow-hidden transition-all duration-300 ${
+                maxStep < 2 ? 'opacity-50' : ''
+              }`}>
+                <button
+                  disabled={maxStep < 2}
+                  onClick={() => handleGoToStep(2)}
+                  className="w-full bg-[#F7F7F2] px-4 py-3 text-left text-xs font-bold flex justify-between items-center outline-none"
+                >
+                  <span className={maxStep < 2 ? 'text-[#96A0A8]' : 'text-[#14181A]'}>02. Presupuesto Estimado e Impacto Ambiental</span>
+                  <span className={`text-[9px] font-medium px-2 py-0.5 rounded ${
+                    activeStep === 2 ? 'bg-[#123524] text-white' : 'bg-slate-200 text-[#5B6570]'
+                  }`}>
+                    {maxStep < 2 ? 'Bloqueado' : activeStep === 2 ? 'Activo' : 'Completado'}
+                  </span>
+                </button>
+
+                {activeStep === 2 && selectedProject && (
+                  <div className="p-4 space-y-3 bg-white">
+                    <div className="p-3.5 bg-[#F7F7F2] border border-[#E7E7E1] rounded-lg space-y-2.5">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-[#5B6570] font-medium">Volumen Total Requerido:</span>
+                        <span className="font-mono font-bold text-[#14181A]">
+                          {outputQty} <span className="text-[10px] text-[#96A0A8] font-sans">{selectedProject.unit}</span>
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs border-t border-slate-100 pt-2">
+                        <span className="text-[#5B6570] font-medium">Presupuesto Estimado (F.O.B.):</span>
+                        <span className="font-mono font-bold text-[#2E9E5B]">
+                          ${outputCost.toLocaleString()} <span className="text-[10px] text-[#96A0A8] font-sans">USD</span>
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs border-t border-slate-100 pt-2">
+                        <span className="text-[#5B6570] font-medium">Reducción de Huella Ambiental:</span>
+                        <span className="font-mono font-semibold text-[#123524] bg-[#C6E24C] px-2 py-0.5 rounded-full">
+                          -{outputCO2} t CO₂e
                         </span>
                       </div>
                     </div>
-                  )}
 
-                  <div className="text-xs text-[#5B6570] leading-relaxed bg-[#F7F7F2] p-3 rounded border border-[#E7E7E1] italic">
-                    {selectedProject?.info}
+                    <button
+                      type="button"
+                      onClick={() => handleNextStep(3)}
+                      className="w-full bg-[#123524] hover:bg-[#0B2A1B] text-white font-medium py-2 rounded text-xs tracking-wide uppercase transition-all"
+                    >
+                      Ver Certificaciones y Garantías ➔
+                    </button>
                   </div>
+                )}
+              </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleNextStep(2)}
-                    className="w-full bg-[#123524] hover:bg-[#0B2A1B] text-white font-medium py-2 rounded text-xs tracking-wide uppercase transition-all"
-                  >
-                    Calcular Métricas ➔
-                  </button>
-                </div>
-              )}
-            </div>
+              {/* PASO 3 */}
+              <div className={`border border-[#E7E7E1] rounded-lg overflow-hidden transition-all duration-300 ${
+                maxStep < 3 ? 'opacity-50' : ''
+              }`}>
+                <button
+                  disabled={maxStep < 3}
+                  onClick={() => handleGoToStep(3)}
+                  className="w-full bg-[#F7F7F2] px-4 py-3 text-left text-xs font-bold flex justify-between items-center outline-none"
+                >
+                  <span className={maxStep < 3 ? 'text-[#96A0A8]' : 'text-[#14181A]'}>03. Sostenibilidad Homologada y Cierre</span>
+                  <span className={`text-[9px] font-medium px-2 py-0.5 rounded ${
+                    activeStep === 3 ? 'bg-[#123524] text-white' : 'bg-slate-200 text-[#5B6570]'
+                  }`}>
+                    {maxStep < 3 ? 'Bloqueado' : 'Activo'}
+                  </span>
+                </button>
 
-            {/* PASO 2 */}
-            <div className={`border border-[#E7E7E1] rounded-lg overflow-hidden transition-all duration-300 ${
-              maxStep < 2 ? 'opacity-50' : ''
-            }`}>
-              <button
-                disabled={maxStep < 2}
-                onClick={() => handleGoToStep(2)}
-                className="w-full bg-[#F7F7F2] px-4 py-3 text-left text-xs font-bold flex justify-between items-center outline-none"
-              >
-                <span className={maxStep < 2 ? 'text-[#96A0A8]' : 'text-[#14181A]'}>02. Presupuesto Estimado e Impacto Ambiental</span>
-                <span className={`text-[9px] font-medium px-2 py-0.5 rounded ${
-                  activeStep === 2 ? 'bg-[#123524] text-white' : 'bg-slate-200 text-[#5B6570]'
-                }`}>
-                  {maxStep < 2 ? 'Bloqueado' : activeStep === 2 ? 'Activo' : 'Completado'}
-                </span>
-              </button>
+                {activeStep === 3 && (
+                  <div className="p-4 space-y-3 bg-white">
+                    <div className="p-3 bg-[#E4F5E7] border border-[#2E9E5B]/15 rounded-lg space-y-2">
+                      <h4 className="text-[10px] font-bold text-[#123524] uppercase tracking-wider">
+                        Documentación Oficial del Suministro:
+                      </h4>
+                      <div className="grid grid-cols-1 gap-1.5 text-[10px] text-[#5B6570] font-medium">
+                        <div>✓ Certificado Oficial de Destino Final de Residuos Industriales</div>
+                        <div>✓ Balance de Emisiones Sostenibles y Mitigación Ambiental</div>
+                        <div>✓ Homologación de Sello de Sostenibilidad Corporativa</div>
+                      </div>
+                    </div>
 
-              {activeStep === 2 && selectedProject && selectedProduct && (
-                <div className="p-4 space-y-3 bg-white">
-                  <div className="p-3.5 bg-[#F7F7F2] border border-[#E7E7E1] rounded-lg space-y-2.5">
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-[#5B6570] font-medium">Volumen Total Requerido:</span>
-                      <span className="font-mono font-bold text-[#14181A]">
-                        {outputQty} <span className="text-[10px] text-[#96A0A8] font-sans">{selectedProject.unit}</span>
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs border-t border-slate-100 pt-2">
-                      <span className="text-[#5B6570] font-medium">Presupuesto Estimado (F.O.B.):</span>
-                      <span className="font-mono font-bold text-[#2E9E5B]">
-                        ${outputCost.toLocaleString()} <span className="text-[10px] text-[#96A0A8] font-sans">USD</span>
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs border-t border-slate-100 pt-2">
-                      <span className="text-[#5B6570] font-medium">Reducción de Huella Ambiental:</span>
-                      <span className="font-mono font-semibold text-[#123524] bg-[#C6E24C] px-2 py-0.5 rounded-full">
-                        -{outputCO2} t CO₂e
-                      </span>
-                    </div>
+                    <button
+                      onClick={() => setIsModalOpen(true)}
+                      className="w-full bg-[#123524] hover:bg-[#0B2A1B] text-white font-bold py-3 rounded-lg text-xs tracking-wider uppercase transition-all shadow-sm"
+                    >
+                      Generar Requerimiento de Cotización B2B
+                    </button>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => handleNextStep(3)}
-                    className="w-full bg-[#123524] hover:bg-[#0B2A1B] text-white font-medium py-2 rounded text-xs tracking-wide uppercase transition-all"
-                  >
-                    Ver Certificaciones y Garantías ➔
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* PASO 3 */}
-            <div className={`border border-[#E7E7E1] rounded-lg overflow-hidden transition-all duration-300 ${
-              maxStep < 3 ? 'opacity-50' : ''
-            }`}>
-              <button
-                disabled={maxStep < 3}
-                onClick={() => handleGoToStep(3)}
-                className="w-full bg-[#F7F7F2] px-4 py-3 text-left text-xs font-bold flex justify-between items-center outline-none"
-              >
-                <span className={maxStep < 3 ? 'text-[#96A0A8]' : 'text-[#14181A]'}>03. Sostenibilidad Homologada y Cierre</span>
-                <span className={`text-[9px] font-medium px-2 py-0.5 rounded ${
-                  activeStep === 3 ? 'bg-[#123524] text-white' : 'bg-slate-200 text-[#5B6570]'
-                }`}>
-                  {maxStep < 3 ? 'Bloqueado' : 'Activo'}
-                </span>
-              </button>
-
-              {activeStep === 3 && (
-                <div className="p-4 space-y-3 bg-white">
-                  <div className="p-3 bg-[#E4F5E7] border border-[#2E9E5B]/15 rounded-lg space-y-2">
-                    <h4 className="text-[10px] font-bold text-[#123524] uppercase tracking-wider">
-                      Documentación Oficial del Suministro:
-                    </h4>
-                    <div className="grid grid-cols-1 gap-1.5 text-[10px] text-[#5B6570] font-medium">
-                      <div>✓ Certificado Oficial de Destino Final de Residuos Industriales</div>
-                      <div>✓ Balance de Emisiones Sostenibles y Mitigación Ambiental</div>
-                      <div>✓ Homologación de Sello de Sostenibilidad Corporativa</div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="w-full bg-[#123524] hover:bg-[#0B2A1B] text-white font-bold py-3 rounded-lg text-xs tracking-wider uppercase transition-all shadow-sm"
-                  >
-                    Generar Requerimiento de Cotización B2B
-                  </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </main>
+      </div>
+    );
+  };
+
+  return (
+    <div className="bg-[#F7F7F2] text-[#14181A] font-sans min-h-screen py-6 px-4 md:px-8">
+      {isDetailOpen ? renderDetailView() : renderCatalogView()}
 
       {/* MODAL FORMAL DE ENVÍO */}
       {isModalOpen && selectedProduct && selectedProject && (
