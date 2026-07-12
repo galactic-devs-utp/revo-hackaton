@@ -104,6 +104,22 @@ const LOCAL_PRODUCTS_CONFIG: Record<string, ProductLocalConfig> = {
   }
 };
 
+const PRODUCT_APPLICATIONS: Record<string, { label: string; image: string }[]> = {
+  "Caucho Granulado Fino": [
+    { label: "Pistas y Asfalto Ecológico", image: "https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?auto=format&fit=crop&w=400&q=80" },
+    { label: "Gras Sintético y Campos", image: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=400&q=80" }
+  ],
+  "Aceite Pirolítico Industrial": [
+    { label: "Hornos y Calderas Industriales", image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80" }
+  ],
+  "Negro de Humo Recuperado (rCB)": [
+    { label: "Refuerzo de Caucho y Plásticos", image: "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=400&q=80" }
+  ],
+  "Acero de Llanta Siderúrgico": [
+    { label: "Fibras de Refuerzo para Concreto", image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80" }
+  ]
+};
+
 interface DbProduct {
   id: string;
   name: string;
@@ -369,6 +385,27 @@ Catálogo Homologado            </h2>
                             <li key={index}>{char}</li>
                           ))}
                         </ul>
+                      </div>
+
+                      {/* Aplicaciones de Economía Circular */}
+                      <div className="pt-3 border-t border-[#2E9E5B]/10">
+                        <strong className="text-[#14181A] block mb-2">Aplicaciones de Economía Circular:</strong>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {(PRODUCT_APPLICATIONS[prod.name] || []).map((app, idx) => (
+                            <div key={idx} className="relative rounded-lg overflow-hidden border border-slate-200/50 group h-28">
+                              <img 
+                                src={app.image} 
+                                alt={app.label} 
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2">
+                                <span className="text-[10px] font-bold text-white leading-tight">
+                                  {app.label}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   )}
