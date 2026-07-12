@@ -17,6 +17,7 @@ interface Opportunity {
   enlace_seace: string;
   puntaje_sostenible: number;
   viabilidad: string;
+  correo_contacto?: string;
 }
 
 export const App: React.FC = () => {
@@ -218,12 +219,22 @@ export const App: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <button
-                            onClick={() => setActiveTab('store')}
-                            className="bg-[#123524] hover:bg-[#0B2A1B] text-white px-3 py-1.5 rounded font-bold uppercase text-[10px] tracking-wide transition-all shadow-sm"
-                          >
-                            Cotizar
-                          </button>
+                          <div className="flex justify-center gap-1.5">
+                            <button
+                              onClick={() => setActiveTab('store')}
+                              className="bg-[#123524] hover:bg-[#0B2A1B] text-white px-2.5 py-1.5 rounded font-bold uppercase text-[9px] tracking-wide transition-all shadow-sm"
+                            >
+                              Cotizar
+                            </button>
+                            {opp.correo_contacto && (
+                              <a
+                                href={`mailto:${opp.correo_contacto}?subject=Propuesta de Suministro Sostenible - RevoLink&body=Estimados señores de ${opp.entidad},%0D%0A%0D%0ANos ponemos en contacto en relación a su convocatoria pública: "${opp.objeto}".%0D%0A%0D%0AContamos con la disponibilidad de suministrar insumos ecológicos homologados (caucho granulado, acero siderúrgico y combustibles pirolíticos) que otorgan puntaje adicional por cumplimiento del D.S. 024-2021-MINAM.%0D%0A%0D%0AQuedamos atentos a sus comentarios.%0D%0A%0D%0AAtentamente,%0D%0AArea de Suministro B2B - RevoLink`}
+                                className="bg-[#9EB93A] hover:bg-[#86A02E] text-[#123524] px-2.5 py-1.5 rounded font-bold uppercase text-[9px] tracking-wide transition-all shadow-sm flex items-center justify-center"
+                              >
+                                Contactar
+                              </a>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -243,12 +254,22 @@ export const App: React.FC = () => {
                       <p className="text-xs text-[#5B6570] leading-relaxed">{opp.objeto}</p>
                       <div className="flex justify-between items-center pt-2">
                         <span className="font-mono font-bold text-xs text-[#14181A]">S/. {opp.monto.toLocaleString()}</span>
-                        <button
-                          onClick={() => setActiveTab('store')}
-                          className="bg-[#123524] text-white px-3 py-1.5 rounded font-bold uppercase text-[9px] tracking-wide shadow-sm"
-                        >
-                          Cotizar
-                        </button>
+                        <div className="flex gap-1.5">
+                          <button
+                            onClick={() => setActiveTab('store')}
+                            className="bg-[#123524] text-white px-3 py-1.5 rounded font-bold uppercase text-[9px] tracking-wide shadow-sm"
+                          >
+                            Cotizar
+                          </button>
+                          {opp.correo_contacto && (
+                            <a
+                              href={`mailto:${opp.correo_contacto}?subject=Propuesta de Suministro Sostenible - RevoLink&body=Estimados señores de ${opp.entidad},%0D%0A%0D%0ANos ponemos en contacto en relación a su convocatoria pública: "${opp.objeto}".%0D%0A%0D%0AContamos con la disponibilidad de suministrar insumos ecológicos homologados (caucho granulado, acero siderúrgico y combustibles pirolíticos) que otorgan puntaje adicional por cumplimiento del D.S. 024-2021-MINAM.%0D%0A%0D%0AQuedamos atentos a sus comentarios.%0D%0A%0D%0AAtentamente,%0D%0AArea de Suministro B2B - RevoLink`}
+                              className="bg-[#9EB93A] text-[#123524] px-3 py-1.5 rounded font-bold uppercase text-[9px] tracking-wide shadow-sm flex items-center justify-center"
+                            >
+                              Contactar
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}

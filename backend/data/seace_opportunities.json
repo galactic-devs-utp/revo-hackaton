@@ -8,7 +8,8 @@
     "estado": "Convocado",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 10,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "abastecimiento@munilima.gob.pe"
   },
   {
     "id": 2,
@@ -19,7 +20,8 @@
     "estado": "Convocado",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 15,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "adquisiciones@proviasnac.gob.pe"
   },
   {
     "id": 3,
@@ -30,7 +32,8 @@
     "estado": "Convocado",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 8,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "logistica@regionpiura.gob.pe"
   },
   {
     "id": 4,
@@ -41,7 +44,8 @@
     "estado": "Adjudicado",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 5,
-    "viabilidad": "Media"
+    "viabilidad": "Media",
+    "correo_contacto": "abastecimiento@miraflores.gob.pe"
   },
   {
     "id": 5,
@@ -52,7 +56,8 @@
     "estado": "Vigente",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 12,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "logistica@muniarequipa.gob.pe"
   },
   {
     "id": 6,
@@ -63,7 +68,8 @@
     "estado": "Convocado",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 10,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "adquisiciones@msi.gob.pe"
   },
   {
     "id": 7,
@@ -74,7 +80,8 @@
     "estado": "Adjudicado",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 6,
-    "viabilidad": "Media"
+    "viabilidad": "Media",
+    "correo_contacto": "abastecimiento@municusco.gob.pe"
   },
   {
     "id": 8,
@@ -85,7 +92,8 @@
     "estado": "Convocado",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 10,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "logistica@regionlalibertad.gob.pe"
   },
   {
     "id": 9,
@@ -96,7 +104,8 @@
     "estado": "Vigente",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 8,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "adquisiciones@munitrujillo.gob.pe"
   },
   {
     "id": 10,
@@ -107,7 +116,8 @@
     "estado": "Vigente",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 8,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "abastecimiento@munisurco.gob.pe"
   },
   {
     "id": 11,
@@ -118,7 +128,8 @@
     "estado": "Vigente",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 10,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "compras.ferrosas@sider.com.pe"
   },
   {
     "id": 12,
@@ -129,7 +140,8 @@
     "estado": "Convocado",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 12,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "abastecimiento.energia@unacem.com.pe"
   },
   {
     "id": 13,
@@ -140,7 +152,8 @@
     "estado": "Vigente",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 8,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "compras.materiaprima@acerosarequipa.com"
   },
   {
     "id": 14,
@@ -151,7 +164,8 @@
     "estado": "Adjudicado",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 6,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "logistica@msb.gob.pe"
   },
   {
     "id": 15,
@@ -162,7 +176,8 @@
     "estado": "Convocado",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 12,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "logistica@regioncallao.gob.pe"
   },
   {
     "id": 16,
@@ -173,7 +188,8 @@
     "estado": "Vigente",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 10,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "abastecimiento@munichiclayo.gob.pe"
   },
   {
     "id": 17,
@@ -184,7 +200,8 @@
     "estado": "Vigente",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 10,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "abastecimiento@cpacasmayo.com.pe"
   },
   {
     "id": 18,
@@ -195,7 +212,8 @@
     "estado": "Vigente",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 8,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "adquisiciones@calidda.com.pe"
   },
   {
     "id": 19,
@@ -206,7 +224,8 @@
     "estado": "Vigente",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 8,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "abastecimiento@ladrillera-rex.com"
   },
   {
     "id": 20,
@@ -217,6 +236,7 @@
     "estado": "Convocado",
     "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
     "puntaje_sostenible": 10,
-    "viabilidad": "Alta"
+    "viabilidad": "Alta",
+    "correo_contacto": "logistica@munimolina.gob.pe"
   }
 ]

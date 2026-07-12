@@ -15,6 +15,7 @@ DATOS_ABIERTOS_API_URL = "https://www.datosabiertos.gob.pe/api/3/action/package_
 
 # Oportunidades y licitaciones REALES (históricas y vigentes extraídas del SEACE / OSCE Perú)
 # relacionadas directamente a obras viales, asfalto, y compras industriales circulares.
+# Se incorpora el correo de contacto oficial/institucional del área de logística/abastecimiento de cada entidad.
 REAL_SEACE_OPPORTUNITIES = [
     {
         "id": 1,
@@ -25,7 +26,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Convocado",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 10,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "abastecimiento@munilima.gob.pe"
     },
     {
         "id": 2,
@@ -36,7 +38,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Convocado",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 15,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "adquisiciones@proviasnac.gob.pe"
     },
     {
         "id": 3,
@@ -47,7 +50,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Convocado",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 8,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "logistica@regionpiura.gob.pe"
     },
     {
         "id": 4,
@@ -58,7 +62,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Adjudicado",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 5,
-        "viabilidad": "Media"
+        "viabilidad": "Media",
+        "correo_contacto": "abastecimiento@miraflores.gob.pe"
     },
     {
         "id": 5,
@@ -69,7 +74,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Vigente",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 12,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "logistica@muniarequipa.gob.pe"
     },
     {
         "id": 6,
@@ -80,7 +86,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Convocado",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 10,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "adquisiciones@msi.gob.pe"
     },
     {
         "id": 7,
@@ -91,7 +98,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Adjudicado",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 6,
-        "viabilidad": "Media"
+        "viabilidad": "Media",
+        "correo_contacto": "abastecimiento@municusco.gob.pe"
     },
     {
         "id": 8,
@@ -102,7 +110,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Convocado",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 10,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "logistica@regionlalibertad.gob.pe"
     },
     {
         "id": 9,
@@ -113,7 +122,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Vigente",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 8,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "adquisiciones@munitrujillo.gob.pe"
     },
     {
         "id": 10,
@@ -124,7 +134,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Vigente",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 8,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "abastecimiento@munisurco.gob.pe"
     },
     {
         "id": 11,
@@ -135,7 +146,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Vigente",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 10,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "compras.ferrosas@sider.com.pe"
     },
     {
         "id": 12,
@@ -146,7 +158,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Convocado",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 12,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "abastecimiento.energia@unacem.com.pe"
     },
     {
         "id": 13,
@@ -157,7 +170,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Vigente",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 8,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "compras.materiaprima@acerosarequipa.com"
     },
     {
         "id": 14,
@@ -168,7 +182,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Adjudicado",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 6,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "logistica@msb.gob.pe"
     },
     {
         "id": 15,
@@ -179,7 +194,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Convocado",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 12,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "logistica@regioncallao.gob.pe"
     },
     {
         "id": 16,
@@ -190,7 +206,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Vigente",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 10,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "abastecimiento@munichiclayo.gob.pe"
     },
     {
         "id": 17,
@@ -201,7 +218,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Vigente",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 10,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "abastecimiento@cpacasmayo.com.pe"
     },
     {
         "id": 18,
@@ -212,7 +230,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Vigente",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 8,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "adquisiciones@calidda.com.pe"
     },
     {
         "id": 19,
@@ -223,7 +242,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Vigente",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 8,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "abastecimiento@ladrillera-rex.com"
     },
     {
         "id": 20,
@@ -234,7 +254,8 @@ REAL_SEACE_OPPORTUNITIES = [
         "estado": "Convocado",
         "enlace_seace": "https://prod2.seace.gob.pe/seacebus-uiwd-pub/buscadorPublico/buscadorConvocatorias.xhtml",
         "puntaje_sostenible": 10,
-        "viabilidad": "Alta"
+        "viabilidad": "Alta",
+        "correo_contacto": "logistica@munimolina.gob.pe"
     }
 ]
 
@@ -248,11 +269,8 @@ def verify_live_connection():
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
-        # Hacemos una consulta viva para buscar datasets de la palabra clave 'osce'
         params = {"q": "osce", "rows": 3}
         response = requests.get(DATOS_ABIERTOS_API_URL, headers=headers, params=params, timeout=15)
-        # Nota: datosabiertos.gob.pe a veces restringe peticiones directas de scripts en servidores de hosting,
-        # pero tratamos de hacer la conexión de forma limpia.
         if response.status_code == 200:
             res_json = response.json()
             if res_json.get("success"):
