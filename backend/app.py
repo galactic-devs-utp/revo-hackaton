@@ -375,6 +375,71 @@ def trigger_scrape():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route("/api/corporate-quotes", methods=["GET"])
+def get_corporate_quotes():
+    try:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(current_dir, "data", "corporate_quotes.json")
+        if os.path.exists(json_path):
+            import json
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            return jsonify(data)
+        else:
+            return jsonify([])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/corporate-quotes", methods=["POST"])
+def add_corporate_quote():
+    try:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(current_dir, "data", "corporate_quotes.json")
+        
+        import json
+        quotes = []
+        if os.path.exists(json_path):
+            with open(json_path, "r", encoding="utf-8") as f:
+                quotes = json.load(f)
+                
+        new_quote = request.json or {}
+        quotes.insert(0, new_quote)
+        
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(quotes, f, indent=2, ensure_ascii=False)
+            
+        return jsonify({"success": True, "quotes": quotes}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/corporate-quotes/update", methods=["POST"])
+def update_corporate_quote():
+    try:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(current_dir, "data", "corporate_quotes.json")
+        
+        data = request.json or {}
+        quote_id = data.get("id")
+        new_status = data.get("estado")
+        
+        import json
+        if os.path.exists(json_path):
+            with open(json_path, "r", encoding="utf-8") as f:
+                quotes = json.load(f)
+                
+            for q in quotes:
+                if q["id"] == quote_id:
+                    q["estado"] = new_status
+                    break
+                    
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(quotes, f, indent=2, ensure_ascii=False)
+                
+            return jsonify({"success": True, "quotes": quotes}), 200
+        return jsonify({"error": "File not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)

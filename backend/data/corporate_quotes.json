@@ -1,0 +1,46 @@
+[
+  {
+    "id": "Q-082",
+    "ticket": "58492",
+    "empresa": "Consorcio Vial Piura S.A.C.",
+    "material": "Caucho Granulado Fino",
+    "volumen": "45.2 Tons",
+    "presupuesto": "S/. 125,500",
+    "contacto": "+51 982 122 322",
+    "estado": "Pendiente",
+    "fecha": "2026-07-11"
+  },
+  {
+    "id": "Q-081",
+    "ticket": "39481",
+    "empresa": "Aceros Arequipa S.A.",
+    "material": "Acero de Llanta Siderúrgico",
+    "volumen": "180.0 Tons",
+    "presupuesto": "S/. 324,000",
+    "contacto": "+51 945 889 212",
+    "estado": "Aprobado",
+    "fecha": "2026-07-10"
+  },
+  {
+    "id": "Q-080",
+    "ticket": "82048",
+    "empresa": "UNACEM S.A.A.",
+    "material": "Aceite Pirolítico Industrial",
+    "volumen": "8,500 Gls",
+    "presupuesto": "S/. 142,500",
+    "contacto": "+51 902 443 112",
+    "estado": "Despachado",
+    "fecha": "2026-07-09"
+  },
+  {
+    "id": "Q-079",
+    "ticket": "19385",
+    "empresa": "Constructora San Martín S.A.",
+    "material": "Negro de Humo Recuperado (rCB)",
+    "volumen": "12.5 Tons",
+    "presupuesto": "S/. 65,000",
+    "contacto": "+51 977 432 110",
+    "estado": "Pendiente",
+    "fecha": "2026-07-08"
+  }
+]

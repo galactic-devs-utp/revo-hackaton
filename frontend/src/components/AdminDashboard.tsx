@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Mock list of B2B quotes submitted by customers
 const INITIAL_QUOTES = [
@@ -49,9 +49,45 @@ const INITIAL_QUOTES = [
 ];
 
 export const AdminDashboard: React.FC = () => {
-  const [quotes, setQuotes] = useState(INITIAL_QUOTES);
+  const [quotes, setQuotes] = useState<any[]>([]);
 
-  const handleUpdateStatus = (id: string, newStatus: string) => {
+  const fetchQuotes = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/corporate-quotes');
+      if (res.ok) {
+        const data = await res.json();
+        setQuotes(data);
+      } else {
+        setQuotes(INITIAL_QUOTES);
+      }
+    } catch (err) {
+      console.error(err);
+      setQuotes(INITIAL_QUOTES);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuotes();
+  }, []);
+
+  const handleUpdateStatus = async (id: string, newStatus: string) => {
+    try {
+      const res = await fetch('http://localhost:5000/api/corporate-quotes/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, estado: newStatus })
+      });
+      if (res.ok) {
+        const resData = await res.json();
+        if (resData.success && resData.quotes) {
+          setQuotes(resData.quotes);
+          return;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
     setQuotes(prev =>
       prev.map(q => q.id === id ? { ...q, estado: newStatus } : q)
     );

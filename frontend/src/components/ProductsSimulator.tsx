@@ -233,6 +233,30 @@ export const ProductsSimulator: React.FC = () => {
       return;
     }
 
+    const randomTicket = String(Math.floor(10000 + Math.random() * 90000));
+    const randomId = `Q-${Math.floor(100 + Math.random() * 900)}`;
+    const newQuote = {
+      id: randomId,
+      ticket: randomTicket,
+      empresa: companyName,
+      material: selectedProduct.name,
+      volumen: `${outputQty} ${selectedProduct.unit || 'Tons'}`,
+      presupuesto: `S/. ${(outputCost * 3.7).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`,
+      contacto: contactName,
+      estado: 'Pendiente',
+      fecha: new Date().toISOString().split('T')[0]
+    };
+
+    fetch('http://localhost:5000/api/corporate-quotes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newQuote)
+    })
+      .then(res => {
+        if (!res.ok) console.error("Error saving quote dynamically");
+      })
+      .catch(err => console.error("Error posting quote:", err));
+
     const message = `*REQUERIMIENTO DE COTIZACIÓN B2B - REVOLINK*\n\n` +
       `*Datos del Cliente:*\n` +
       `- Razón Social: ${companyName}\n` +
@@ -241,6 +265,7 @@ export const ProductsSimulator: React.FC = () => {
       `- Correo: ${email}\n` +
       `- Planta Destino: ${plantaAddress}\n\n` +
       `*Detalle del Proyecto:*\n` +
+      `- Ticket de Gestión: #${randomTicket}\n` +
       `- Material Requerido: ${selectedProduct.name}\n` +
       `- Destino de Aplicación: ${selectedProject.name}\n` +
       `- Volumen Proyectado: ${dimensionInput} ${selectedProject.badge}\n` +
@@ -257,40 +282,7 @@ export const ProductsSimulator: React.FC = () => {
   const renderCatalogView = () => {
     return (
       <div className="animate-fadeIn">
-        {/* FRANJA DE INDICADORES */}
-        <section className="max-w-7xl mx-auto mb-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-            <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-              <div className="w-8 h-8 rounded-lg bg-[#F4FAE0] flex items-center justify-center mb-3">
-                <span className="text-[#9EB93A] font-bold text-sm">🌎</span>
-              </div>
-              <p className="text-xl sm:text-2xl font-extrabold tracking-tight">3</p>
-              <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Países LATAM</p>
-            </div>
-            <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-              <div className="w-8 h-8 rounded-lg bg-[#E4F5E7] flex items-center justify-center mb-3">
-                <span className="text-[#2E9E5B] font-bold text-sm">🔥</span>
-              </div>
-              <p className="text-xl sm:text-2xl font-extrabold tracking-tight">150+</p>
-              <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Campañas Activas</p>
-            </div>
-            <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-              <div className="w-8 h-8 rounded-lg bg-[#F4FAE0] flex items-center justify-center mb-3">
-                <span className="text-[#9EB93A] font-bold text-sm">🌱</span>
-              </div>
-              <p className="text-xl sm:text-2xl font-extrabold tracking-tight">32,000+</p>
-              <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Toneladas Procesadas</p>
-            </div>
-            <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
-              <div className="w-8 h-8 rounded-lg bg-[#E4F5E7] flex items-center justify-center mb-3">
-                <span className="text-[#2E9E5B] font-bold text-sm">⚙️</span>
-              </div>
-              <p className="text-xl sm:text-2xl font-extrabold tracking-tight">4</p>
-              <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Materiales Homologados</p>
-            </div>
-          </div>
-        </section>
-
+        
         {/* CONTENIDO DEL CATÁLOGO */}
         <div className="max-w-7xl mx-auto space-y-6">
           <div>
