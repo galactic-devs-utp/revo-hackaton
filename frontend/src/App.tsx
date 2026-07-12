@@ -355,8 +355,8 @@ export const App: React.FC = () => {
         <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} userRole={userRole} />
       )}
 
-      {/* FLOATING CHAT WIDGET - Only for Client Users */}
-      {userRole === 'user' && (
+      {/* FLOATING CHAT WIDGET - Available for Logged In Users */}
+      {userRole && (
         <div className="fixed bottom-20 md:bottom-6 right-6 z-50 flex flex-col items-end">
           {/* Chat Window */}
           {isChatOpen && (
