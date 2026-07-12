@@ -341,6 +341,21 @@ def chat():
 def health():
     return jsonify({"status": "healthy", "mode": "gemini" if client else "local"})
 
+@app.route("/api/opportunities", methods=["GET"])
+def get_opportunities():
+    try:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(current_dir, "data", "seace_opportunities.json")
+        if os.path.exists(json_path):
+            import json
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            return jsonify(data)
+        else:
+            return jsonify([])
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)

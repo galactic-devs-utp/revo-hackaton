@@ -5,10 +5,38 @@ import { ChatMessage } from './components/ChatMessage';
 import type { Message } from './components/ChatMessage';
 import { ProductsSimulator } from './components/ProductsSimulator';
 
+interface Opportunity {
+  id: number;
+  entidad: string;
+  objeto: string;
+  monto: number;
+  fecha_publicacion: string;
+  estado: string;
+  enlace_seace: string;
+  puntaje_sostenible: number;
+  viabilidad: string;
+}
+
 export const App: React.FC = () => {
   // Start on products tab by default
   const [activeTab, setActiveTab] = useState('store');
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/opportunities');
+        if (res.ok) {
+          const data = await res.json();
+          setOpportunities(data);
+        }
+      } catch (err) {
+        console.error("Error fetching opportunities:", err);
+      }
+    };
+    fetchOpportunities();
+  }, []);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -106,19 +134,122 @@ export const App: React.FC = () => {
     switch (activeTab) {
       case 'dashboard':
         return (
-          <div className="pt-[88px] pb-[100px] px-margin-mobile md:px-margin-desktop md:max-w-3xl md:mx-auto min-h-screen flex flex-col justify-center items-center text-center gap-4 animate-fadeIn">
-            <div className="bg-white/80 border border-slate-100 p-8 rounded-2xl shadow-sm max-w-lg">
-              <span className="text-4xl">🌱</span>
-              <h2 className="text-2xl font-bold text-[#123524] mt-4 tracking-tight">Bienvenido a RevoLink</h2>
-              <p className="text-sm text-[#5B6570] mt-2">
-                Su plataforma integrada de suministro circular e industria sostenible.
-              </p>
+          <div className="pt-[88px] pb-[100px] px-4 md:px-8 max-w-7xl mx-auto space-y-8 animate-fadeIn">
+            {/* CABECERA DE BIENVENIDA */}
+            <div className="bg-white border border-[#E7E7E1] p-6 rounded-2xl shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <h2 className="text-2xl font-extrabold text-[#123524] tracking-tight">Portal de Contratación Sostenible B2B</h2>
+                <p className="text-xs text-[#5B6570] mt-1">
+                  Identifique oportunidades del Estado peruano (SEACE) que otorgan puntos adicionales por el uso de materiales de economía circular.
+                </p>
+              </div>
               <button 
                 onClick={() => setActiveTab('store')} 
-                className="mt-6 bg-[#123524] text-white py-2.5 px-6 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-[#0B2A1B] transition-colors"
+                className="bg-[#123524] hover:bg-[#0B2A1B] text-white py-2.5 px-5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors shadow-sm whitespace-nowrap"
               >
-                Explorar Catálogo y Simulador
+                Simular Suministro ➔
               </button>
+            </div>
+
+            {/* INDICADORES DEL PANEL */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
+                <div className="w-8 h-8 rounded-lg bg-[#F4FAE0] flex items-center justify-center mb-3">
+                  <span className="text-[#9EB93A] font-bold text-sm">🏛️</span>
+                </div>
+                <p className="text-xl sm:text-2xl font-extrabold tracking-tight">OSCE</p>
+                <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Fuente Homologada</p>
+              </div>
+              <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
+                <div className="w-8 h-8 rounded-lg bg-[#E4F5E7] flex items-center justify-center mb-3">
+                  <span className="text-[#2E9E5B] font-bold text-sm">📈</span>
+                </div>
+                <p className="text-xl sm:text-2xl font-extrabold tracking-tight">{opportunities.length}</p>
+                <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Licitaciones Activas</p>
+              </div>
+              <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
+                <div className="w-8 h-8 rounded-lg bg-[#F4FAE0] flex items-center justify-center mb-3">
+                  <span className="text-[#9EB93A] font-bold text-sm">⚡</span>
+                </div>
+                <p className="text-xl sm:text-2xl font-extrabold tracking-tight">100%</p>
+                <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Suministro Asegurado</p>
+              </div>
+              <div className="bg-white border border-[#E7E7E1] rounded-xl p-4 shadow-sm">
+                <div className="w-8 h-8 rounded-lg bg-[#E4F5E7] flex items-center justify-center mb-3">
+                  <span className="text-[#2E9E5B] font-bold text-sm">🎖️</span>
+                </div>
+                <p className="text-xl sm:text-2xl font-extrabold tracking-tight">+15 PTS</p>
+                <p className="text-[10px] font-bold text-[#5B6570] uppercase tracking-wide mt-1">Puntaje Máximo Extra</p>
+              </div>
+            </div>
+
+            {/* TABLA DE OPORTUNIDADES SEACE */}
+            <div className="bg-white border border-[#E7E7E1] rounded-2xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-[#E7E7E1] bg-[#F7F7F2]">
+                <h3 className="font-bold text-sm text-[#14181A]">Convocatorias del Estado (Asfalto y Obras Viales)</h3>
+                <p className="text-[11px] text-[#5B6570]">Actualizado en tiempo real desde el portal de datos abiertos del SEACE.</p>
+              </div>
+
+              {/* TABLE CONTAINER FOR DESKTOP, CARDS FOR MOBILE */}
+              <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
+                <table className="w-full text-left border-collapse text-xs hidden md:table">
+                  <thead>
+                    <tr className="bg-[#F7F7F2] border-b border-[#E7E7E1] text-[#5B6570] font-bold">
+                      <th className="px-6 py-3.5">Entidad Pública</th>
+                      <th className="px-6 py-3.5">Objeto del Requerimiento</th>
+                      <th className="px-6 py-3.5">Presupuesto</th>
+                      <th className="px-6 py-3.5">Bases Ecológicas</th>
+                      <th className="px-6 py-3.5 text-center">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {opportunities.map((opp) => (
+                      <tr key={opp.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-6 py-4 font-bold text-[#14181A] max-w-[180px] truncate">{opp.entidad}</td>
+                        <td className="px-6 py-4 text-[#5B6570] max-w-[280px] break-words">{opp.objeto}</td>
+                        <td className="px-6 py-4 font-mono font-bold text-[#14181A]">S/. {opp.monto.toLocaleString()}</td>
+                        <td className="px-6 py-4">
+                          <span className="inline-flex items-center gap-1 bg-[#E4F5E7] text-[#2E9E5B] font-bold px-2.5 py-0.5 rounded-full text-[10px]">
+                            +{opp.puntaje_sostenible} Pts
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <button
+                            onClick={() => setActiveTab('store')}
+                            className="bg-[#123524] hover:bg-[#0B2A1B] text-white px-3 py-1.5 rounded font-bold uppercase text-[10px] tracking-wide transition-all shadow-sm"
+                          >
+                            Cotizar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {/* MOBILE VIEW CARD LIST */}
+                <div className="divide-y divide-slate-100 md:hidden">
+                  {opportunities.map((opp) => (
+                    <div key={opp.id} className="p-4 space-y-3 bg-white">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="text-[10px] font-bold text-[#14181A] uppercase tracking-wide truncate max-w-[70%]">{opp.entidad}</span>
+                        <span className="bg-[#E4F5E7] text-[#2E9E5B] font-bold px-2 py-0.5 rounded text-[9px] whitespace-nowrap">
+                          +{opp.puntaje_sostenible} Pts Extra
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#5B6570] leading-relaxed">{opp.objeto}</p>
+                      <div className="flex justify-between items-center pt-2">
+                        <span className="font-mono font-bold text-xs text-[#14181A]">S/. {opp.monto.toLocaleString()}</span>
+                        <button
+                          onClick={() => setActiveTab('store')}
+                          className="bg-[#123524] text-white px-3 py-1.5 rounded font-bold uppercase text-[9px] tracking-wide shadow-sm"
+                        >
+                          Cotizar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         );
