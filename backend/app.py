@@ -356,6 +356,25 @@ def get_opportunities():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/api/scrape", methods=["POST"])
+def trigger_scrape():
+    try:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        # Import and execute the scraper script
+        import seace_scraper
+        seace_scraper.main()
+        
+        # Read the fresh json
+        json_path = os.path.join(current_dir, "data", "seace_opportunities.json")
+        if os.path.exists(json_path):
+            import json
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            return jsonify({"success": True, "opportunities": data})
+        return jsonify({"success": False, "error": "Scraping failed to create output"}), 500
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)

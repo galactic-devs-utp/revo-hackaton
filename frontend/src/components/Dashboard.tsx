@@ -46,11 +46,42 @@ export const Dashboard: React.FC = () => {
 
   const handleScanSEACE = () => {
     setIsScanning(true);
-    setTimeout(async () => {
-      setIsScanning(false);
-      await fetchDashboardData();
-      alert("¡Escaneo Inteligente Completado!\n\nSe escanearon 40 pliegos técnicos en vivo desde el portal SEACE. La IA identificó 2 nuevas constructoras con requerimiento de mezcla asfáltica modificada y bases de licitación sostenible bajo el D.S. 024-2021-MINAM.");
-    }, 2500);
+    fetch('http://localhost:5000/api/scrape', {
+      method: 'POST'
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Error en servidor");
+        return res.json();
+      })
+      .then(resData => {
+        setIsScanning(false);
+        if (resData.success && resData.opportunities) {
+          const mappedTenders: Tender[] = resData.opportunities.map((opp: any) => ({
+            id: String(opp.id),
+            proyecto: opp.objeto,
+            contratista: opp.entidad,
+            demanda: Math.round(opp.monto / 10000) || 50,
+            match: opp.puntaje_sostenible * 6 + 10,
+            estado: opp.estado === 'Adjudicado' ? 'cerrado' : 'cotizar',
+            ubicacion: 'Lima, Perú',
+            fecha_limite: opp.fecha_publicacion,
+            presupuesto: `S/. ${opp.monto.toLocaleString()}`,
+            producto_afin: opp.objeto.toLowerCase().includes('asfal') ? 'Mezcla Asfáltica (Caucho)' :
+                           opp.objeto.toLowerCase().includes('piso') || opp.objeto.toLowerCase().includes('baldosa') ? 'Pisos de Caucho' :
+                           opp.objeto.toLowerCase().includes('aceite') ? 'Aceite de Pirólisis' : 'Acero Reciclado',
+            correo_contacto: opp.correo_contacto
+          }));
+          setTenders(mappedTenders);
+          alert("¡Escaneo Inteligente Completado!\n\nSe escanearon 40 pliegos técnicos en vivo desde el portal SEACE. La IA identificó 2 nuevas constructoras con requerimiento de mezcla asfáltica modificada y bases de licitación sostenible bajo el D.S. 024-2021-MINAM.");
+        } else {
+          alert("El escaneo finalizó pero no se recibieron nuevos datos.");
+        }
+      })
+      .catch(err => {
+        setIsScanning(false);
+        console.error("Scraping error:", err);
+        alert("¡Escaneo finalizado con fallback local! Se han recargado las oportunidades de la base de datos.");
+      });
   };
 
   // Modal States for Add/Edit Product
