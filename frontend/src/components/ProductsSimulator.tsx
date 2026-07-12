@@ -599,7 +599,7 @@ Catálogo Homologado            </h2>
       {/* MODAL FORMAL DE ENVÍO */}
       {isModalOpen && selectedProduct && selectedProject && (
         <div className="fixed inset-0 z-50 bg-[#123524]/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-[#E7E7E1] rounded-xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col animate-fadeIn">
+          <div className="bg-white border border-[#E7E7E1] rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto flex flex-col animate-fadeIn">
             <div className="px-6 py-4 bg-[#F7F7F2] border-b border-[#E7E7E1] flex justify-between items-center">
               <div>
                 <h3 className="font-bold text-sm text-[#14181A]">
@@ -630,7 +630,7 @@ Catálogo Homologado            </h2>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">
                     Razón Social *
@@ -660,7 +660,7 @@ Catálogo Homologado            </h2>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">
                     Nombre de Contacto *

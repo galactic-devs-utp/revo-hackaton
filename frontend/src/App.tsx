@@ -175,7 +175,7 @@ export const App: React.FC = () => {
       <div className="fixed bottom-20 md:bottom-6 right-6 z-50 flex flex-col items-end">
         {/* Chat Window */}
         {isChatOpen && (
-          <div className="bg-white/95 backdrop-blur-[15px] border border-[#E7E7E1] w-[350px] md:w-[400px] h-[500px] rounded-2xl shadow-2xl flex flex-col mb-4 overflow-hidden animate-fadeIn select-none border-l-4 border-l-[#123524]">
+          <div className="bg-white/95 backdrop-blur-[15px] border border-[#E7E7E1] w-[calc(100vw-48px)] sm:w-[400px] h-[480px] max-h-[70vh] sm:max-h-[500px] rounded-2xl shadow-2xl flex flex-col mb-4 overflow-hidden animate-fadeIn select-none border-l-4 border-l-[#123524]">
             {/* Header */}
             <div className="bg-[#F7F7F2] border-b border-[#E7E7E1] px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
