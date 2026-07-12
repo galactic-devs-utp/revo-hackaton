@@ -53,22 +53,16 @@ pip install -r requeriments.txt
 ### 3. Configurar las Variables de Entorno
 Crea o edita un archivo llamado `.env` dentro de la carpeta `backend/` con las siguientes credenciales:
 ```env
-# API Key de Google Gemini
-GEMINI_API_KEY=tu_api_key_de_gemini
+
 
 # Conexión directa a Supabase (PostgreSQL) para operaciones si aplica
 SUPABASE_URL=https://xxxx.supabase.co
 SUPABASE_KEY=tu_anon_key_de_supabase
 ```
 
-### 4. Generar el PDF Base de Regulaciones (Opcional)
-Si necesitas compilar las regulaciones ambientales peruanas en un solo documento PDF de conocimiento para la IA, ejecuta:
-```bash
-python generate_pdf.py
-```
-*(Esto creará el archivo `backend/data/regulations.pdf`)*
 
-### 5. Iniciar el Servidor Flask
+
+### 4. Iniciar el Servidor Flask
 Inicia el backend en el entorno local:
 ```bash
 python app.py
