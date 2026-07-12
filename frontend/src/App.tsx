@@ -333,7 +333,21 @@ export const App: React.FC = () => {
 
   return (
     <div className="bg-[#F7F7F2] min-h-screen text-[#14181A] font-body-md overflow-x-hidden">
-      <Header onLogout={() => setUserRole(null)} userRole={userRole} />
+      <Header 
+        onLogout={() => {
+          setUserRole(null);
+          setIsChatOpen(false);
+          setMessages([
+            {
+              id: 'welcome',
+              sender: 'assistant',
+              content: 'Hola, soy **SofiA**, el asistente virtual de **RevoLink**. Puedo ayudarte con consultas técnicas y regulatorias (D.S. 024-2021-MINAM) de economía circular de neumáticos fuera de uso.',
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]);
+        }} 
+        userRole={userRole} 
+      />
       {renderContent()}
       
       {userRole === 'user' && (
