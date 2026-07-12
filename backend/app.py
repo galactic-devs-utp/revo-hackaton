@@ -255,7 +255,7 @@ def generate_local_response(query, best_product, best_regulation):
         }, action
 
     # 3. Default fallback
-    content = "Hola, soy **SofiA**, asistente virtual de **RevoLink**. Puedo ayudarte a responder consultas técnicas sobre economía circular, neumáticos fuera de uso (NFU) y nuestros productos ecológicos (Mulch de Caucho y Aceite de Pirólisis) bajo la normativa peruana D.S. 024-2021-MINAM."
+    content = "Hola, soy **SofiA**, asistente virtual de **RevoLink**. Puedo ayudarte a responder consultas sobre neumáticos fuera de uso (NFU) y productos ecológicos de Caucho bajo la normativa peruana D.S. 024-2021-MINAM."
     return content, None, None
 
 def generate_gemini_response(query, best_product, best_regulation):
