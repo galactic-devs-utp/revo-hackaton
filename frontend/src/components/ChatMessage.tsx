@@ -59,20 +59,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onActionClick
             dangerouslySetInnerHTML={{ __html: message.content }}
           />
 
-          {/* Law Snippet Card */}
-          {message.lawSnippet && (
-            <div className="bg-surface-container-lowest/50 border border-outline-variant p-4 rounded-lg my-2 border-l-4 border-l-secondary shadow-sm relative overflow-hidden">
-              <div className="absolute right-0 top-0 opacity-5 pointer-events-none">
-                <span className="material-symbols-outlined text-[64px] notranslate" translate="no">gavel</span>
-              </div>
-              <h4 className="font-label-sm text-label-sm text-secondary mb-2 uppercase tracking-wider">
-                {message.lawSnippet.title}
-              </h4>
-              <p className="font-body-sm text-body-sm text-on-surface-variant italic">
-                "{message.lawSnippet.text}"
-              </p>
-            </div>
-          )}
 
           {/* Call to Action */}
           {message.actionButton && (
