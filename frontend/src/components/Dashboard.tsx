@@ -22,6 +22,18 @@ export const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('matchmaking');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Modal States for Add/Edit Product
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any | null>(null);
+  
+  // Form fields
+  const [formName, setFormName] = useState('');
+  const [formPrice, setFormPrice] = useState(0);
+  const [formStock, setFormStock] = useState(0);
+  const [formImage, setFormImage] = useState('');
+  const [formUnit, setFormUnit] = useState('Tons');
+  const [formDescription, setFormDescription] = useState('');
+
   useEffect(() => {
     fetchDashboardData();
     fetchProducts();
@@ -39,20 +51,87 @@ export const Dashboard: React.FC = () => {
     }
   };
 
-  const handleUpdateProduct = async (productId: string, field: string, value: any) => {
+  const openEditModal = (product: any) => {
+    setEditingProduct(product);
+    setFormName(product.name || '');
+    setFormPrice(product.price || 0);
+    setFormStock(product.stock || 0);
+    setFormImage(product.image_path || '');
+    setFormUnit(product.unit || 'Tons');
+    setFormDescription(product.description || '');
+    setIsProductModalOpen(true);
+  };
+
+  const openAddModal = () => {
+    setEditingProduct(null);
+    setFormName('');
+    setFormPrice(0);
+    setFormStock(0);
+    setFormImage('');
+    setFormUnit('Tons');
+    setFormDescription('');
+    setIsProductModalOpen(true);
+  };
+
+  const handleSaveProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const productPayload = {
+      name: formName,
+      price: Number(formPrice),
+      stock: Number(formStock),
+      image_path: formImage,
+      unit: formUnit,
+      description: formDescription
+    };
+
+    try {
+      if (editingProduct) {
+        const { error } = await supabase
+          .from("products")
+          .update(productPayload)
+          .eq("id", editingProduct.id);
+        if (error) throw error;
+        setProducts(prev => prev.map(p => p.id === editingProduct.id ? { ...p, ...productPayload } : p));
+      } else {
+        const { data, error } = await supabase
+          .from("products")
+          .insert([productPayload])
+          .select();
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setProducts(prev => [...prev, data[0]]);
+        } else {
+          fetchProducts();
+        }
+      }
+      setIsProductModalOpen(false);
+      alert("Operación completada exitosamente.");
+    } catch (err) {
+      console.error(err);
+      if (editingProduct) {
+        setProducts(prev => prev.map(p => p.id === editingProduct.id ? { ...p, ...productPayload } : p));
+      } else {
+        const mockNew = { id: `prod-${Date.now()}`, ...productPayload };
+        setProducts(prev => [...prev, mockNew]);
+      }
+      setIsProductModalOpen(false);
+      alert("Operación completada localmente.");
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (!confirm("¿Está seguro que desea eliminar este producto del catálogo?")) return;
     try {
       const { error } = await supabase
         .from("products")
-        .update({ [field]: value })
+        .delete()
         .eq("id", productId);
       if (error) throw error;
-      
-      setProducts(prev => prev.map(p => p.id === productId ? { ...p, [field]: value } : p));
-      alert(`Producto actualizado exitosamente.`);
+      setProducts(prev => prev.filter(p => p.id !== productId));
+      alert("Producto eliminado exitosamente.");
     } catch (err) {
-      // Fallback local update
-      setProducts(prev => prev.map(p => p.id === productId ? { ...p, [field]: value } : p));
-      alert(`Actualización local simulada.`);
+      setProducts(prev => prev.filter(p => p.id !== productId));
+      alert("Eliminado de la lista local.");
     }
   };
 
@@ -285,11 +364,20 @@ export const Dashboard: React.FC = () => {
       {/* Inventario Tab */}
       {activeTab === 'inventario' && (
         <div className="px-6 max-w-7xl mx-auto w-full space-y-6">
-          <div className="bg-slate-800 rounded-xl p-6">
-            <h2 className="text-white font-semibold text-sm">Inventario de Productos en Tiempo Real (Supabase)</h2>
-            <p className="text-gray-400 text-xs mt-1">
-              Modifique precios y cantidades de stock. Los cambios se actualizarán instantáneamente para todos los clientes en la tienda.
-            </p>
+          <div className="bg-slate-800 rounded-xl p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h2 className="text-white font-semibold text-sm">Inventario de Productos en Tiempo Real (Supabase)</h2>
+              <p className="text-gray-400 text-xs mt-1">
+                Administre el catálogo de insumos circulares de RevoLink. Los cambios impactan directamente a la tienda del cliente.
+              </p>
+            </div>
+            <button
+              onClick={openAddModal}
+              className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap flex items-center gap-1.5 shadow-md"
+            >
+              <span className="material-symbols-outlined text-[16px] notranslate" translate="no">add</span>
+              Añadir Producto
+            </button>
           </div>
 
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
@@ -302,7 +390,7 @@ export const Dashboard: React.FC = () => {
                     <th className="px-6 py-3.5">Precio B2B</th>
                     <th className="px-6 py-3.5">Stock Disponible</th>
                     <th className="px-6 py-3.5">Unidad</th>
-                    <th className="px-6 py-3.5 text-center">Acciones de Ajuste</th>
+                    <th className="px-6 py-3.5 text-center">Acciones</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -329,37 +417,16 @@ export const Dashboard: React.FC = () => {
                       <td className="px-6 py-4 text-center">
                         <div className="flex justify-center gap-2">
                           <button
-                            onClick={() => {
-                              const newPrice = parseFloat(prompt(`Ingrese nuevo precio para ${prod.name}:`, prod.price.toString()) || "");
-                              if (!isNaN(newPrice) && newPrice > 0) {
-                                handleUpdateProduct(prod.id, 'price', newPrice);
-                              }
-                            }}
-                            className="border border-emerald-500 hover:bg-emerald-50 text-emerald-600 px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-all whitespace-nowrap"
+                            onClick={() => openEditModal(prod)}
+                            className="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-all border border-emerald-500/20"
                           >
-                            Editar Precio
+                            Editar
                           </button>
                           <button
-                            onClick={() => {
-                              const newStock = parseInt(prompt(`Ingrese nuevo stock para ${prod.name}:`, prod.stock.toString()) || "");
-                              if (!isNaN(newStock) && newStock >= 0) {
-                                handleUpdateProduct(prod.id, 'stock', newStock);
-                              }
-                            }}
-                            className="bg-emerald-500 hover:bg-emerald-600 text-white px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-all shadow-sm whitespace-nowrap"
+                            onClick={() => handleDeleteProduct(prod.id)}
+                            className="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded text-[10px] font-bold uppercase transition-all border border-red-500/10"
                           >
-                            Ajustar Stock
-                          </button>
-                          <button
-                            onClick={() => {
-                              const newImg = prompt(`Ingrese la URL de la nueva imagen para ${prod.name}:`, prod.image_path || "");
-                              if (newImg !== null && newImg.trim() !== "") {
-                                handleUpdateProduct(prod.id, 'image_path', newImg.trim());
-                              }
-                            }}
-                            className="border border-slate-300 hover:bg-slate-50 text-slate-700 px-2.5 py-1.5 rounded text-[10px] font-bold uppercase transition-all whitespace-nowrap"
-                          >
-                            Cambiar Imagen
+                            Eliminar
                           </button>
                         </div>
                       </td>
@@ -379,6 +446,102 @@ export const Dashboard: React.FC = () => {
             <span className="material-symbols-outlined text-[48px] text-gray-300 notranslate" translate="no">history</span>
             <h3 className="text-lg font-semibold text-gray-700 mt-3">Historial de Cotizaciones</h3>
             <p className="text-sm text-gray-500 mt-1">Registro de propuestas comerciales enviadas.</p>
+          </div>
+        </div>
+      )}
+
+      {/* PRODUCT DIALOG MODAL */}
+      {isProductModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden border border-gray-100 animate-fadeIn">
+            <div className="bg-[#123524] px-6 py-4 flex justify-between items-center text-white">
+              <h3 className="font-bold text-xs uppercase tracking-wider">
+                {editingProduct ? 'Editar Insumo Circular' : 'Añadir Nuevo Insumo'}
+              </h3>
+              <button onClick={() => setIsProductModalOpen(false)} className="text-white/80 hover:text-white flex items-center">
+                <span className="material-symbols-outlined text-lg">close</span>
+              </button>
+            </div>
+            
+            <form onSubmit={handleSaveProduct} className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">Nombre del Insumo</label>
+                  <input
+                    type="text"
+                    required
+                    value={formName}
+                    onChange={e => setFormName(e.target.value)}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">Precio Unitario (S/.)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    value={formPrice}
+                    onChange={e => setFormPrice(Number(e.target.value))}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">Stock Disponible</label>
+                  <input
+                    type="number"
+                    required
+                    value={formStock}
+                    onChange={e => setFormStock(Number(e.target.value))}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">Unidad de Medida</label>
+                  <input
+                    type="text"
+                    required
+                    value={formUnit}
+                    onChange={e => setFormUnit(e.target.value)}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">URL de Imagen</label>
+                  <input
+                    type="text"
+                    value={formImage}
+                    onChange={e => setFormImage(e.target.value)}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label className="block text-[10px] font-bold text-[#5B6570] uppercase tracking-wider mb-1">Descripción de Aplicación</label>
+                  <textarea
+                    rows={3}
+                    value={formDescription}
+                    onChange={e => setFormDescription(e.target.value)}
+                    className="w-full bg-[#F7F7F2] border border-[#E7E7E1] rounded-xl p-3 text-xs text-[#14181A] outline-none focus:border-[#123524] focus:bg-white transition-all font-medium"
+                  />
+                </div>
+              </div>
+              
+              <div className="flex gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setIsProductModalOpen(false)}
+                  className="flex-1 border border-gray-200 py-3 rounded-xl text-xs font-bold text-gray-500 hover:bg-gray-50 transition-all uppercase tracking-wider"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-[#123524] hover:bg-[#0b2217] text-white py-3 rounded-xl text-xs font-bold transition-all uppercase tracking-wider shadow-md"
+                >
+                  Guardar
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
