@@ -10,7 +10,7 @@ Asegúrate de tener instalados los siguientes entornos antes de iniciar:
 * **Node.js** (versión 18 o superior)
 * **Python** (versión 3.9 o superior)
 * Acceso a un proyecto en **Supabase** (Base de Datos Postgres)
-* Una **API Key de Gemini** para el funcionamiento del chatbot (Terra AI)
+* Una **API Key de Gemini** para el funcionamiento del chatbot (SofiA)
 
 ---
 
