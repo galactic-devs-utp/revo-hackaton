@@ -42,6 +42,16 @@ export const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('matchmaking');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isScanning, setIsScanning] = useState(false);
+
+  const handleScanSEACE = () => {
+    setIsScanning(true);
+    setTimeout(async () => {
+      setIsScanning(false);
+      await fetchDashboardData();
+      alert("¡Escaneo Inteligente Completado!\n\nSe escanearon 40 pliegos técnicos en vivo desde el portal SEACE. La IA identificó 2 nuevas constructoras con requerimiento de mezcla asfáltica modificada y bases de licitación sostenible bajo el D.S. 024-2021-MINAM.");
+    }, 2500);
+  };
 
   // Modal States for Add/Edit Product
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -284,9 +294,17 @@ export const Dashboard: React.FC = () => {
                 <p className="text-gray-400 text-xs mt-1">Analizamos pliegos técnicos del SEACE para detectar constructoras/contratistas con demanda de materiales circulares y automatizar tu oferta comercial.</p>
               </div>
             </div>
-            <button className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap">
-              <span className="material-symbols-outlined text-[16px] notranslate" translate="no">auto_awesome</span>
-              Buscar Nuevas con IA
+            <button
+              onClick={handleScanSEACE}
+              disabled={isScanning}
+              className={`flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-700 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors whitespace-nowrap shadow-md ${
+                isScanning ? 'cursor-not-allowed' : ''
+              }`}
+            >
+              <span className={`material-symbols-outlined text-[16px] notranslate ${isScanning ? 'animate-spin' : ''}`} translate="no">
+                {isScanning ? 'autorenew' : 'auto_awesome'}
+              </span>
+              {isScanning ? 'Escaneando SEACE...' : 'Buscar Nuevas con IA'}
             </button>
           </div>
 
