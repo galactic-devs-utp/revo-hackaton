@@ -1,0 +1,473 @@
+{
+  "name": "Revo_Workflow_2",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "34eb704f-d186-4d20-a224-e065706cc218",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        608
+      ],
+      "webhookId": "19316ade-d7ef-4b81-93b5-8c3dc27e1d18",
+      "credentials": {
+        "telegramApi": {
+          "id": "1i0bUJ1lONxtpO7t",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Tu único trabajo es analizar el mensaje enviado por el usuario y clasificarlo OBLIGATORIAMENTE en una de estas tres categorías exactas: SALUDO, INFO_REVO o RECHAZO.\n\nAnaliza con cuidado el contexto y la intención del usuario usando las siguientes reglas detalladas:\n\n1. SALUDO (Interacciones de cortesía y sociales):\nClasifica en esta categoría cualquier mensaje que sirva para iniciar, mantener o cerrar una conversación cordial, preguntas sobre el estado de ánimo del bot, o agradecimientos.\n- Ejemplos permitidos: \"hola\", \"buenos días\", \"buenas tardes\", \"buenas noches\", \"¿cómo estás?\", \"¿qué tal?\", \"¿cómo te va?\", \"gracias\", \"muchas gracias\", \"adiós\", \"chao\".\n\n2. INFO_REVO (Identidad, contacto con asesores, servicios ambientales, tickets/soporte y referencias a la conversación):\nClasifica en esta categoría cualquier mensaje donde el usuario pregunte quién eres, busque información sobre la empresa ReVo, solicite hablar con una persona real, un asesor humano, pida datos de contacto comerciales, consulte sobre TICKETS o el estado de un caso/soporte, O pregunte sobre la conversación actual, el historial del chat, o lo que dijo o preguntó antes.\n- Ejemplos de identidad y contacto: \"¿quién eres?\", \"¿cómo te llamas?\", \"tienes asesor humano\", \"quiero hablar con una persona\", \"contacto de un asesor\", \"número de teléfono\", \"hablar con soporte\", \"asesor comercial\".\n- Ejemplos de tickets/soporte: \"tienes información sobre mis tickets\", \"¿cuál es el estado de mi ticket?\", \"quiero consultar un ticket\", \"información de mi ticket\", \"mis casos de soporte\", \"seguimiento de mi solicitud\".\n- IMPORTANTE: Si el mensaje es (o contiene) un CÓDIGO o IDENTIFICADOR de ticket, aunque venga solo y sin más texto, clasifícalo SIEMPRE como INFO_REVO. Reconoce patrones como \"TK-2026-001\", \"TK2026001\", \"TICKET-123\", \"#12345\", \"ID 4567\", o cualquier combinación alfanumérica con guiones que parezca un número de caso. NUNCA clasifiques un código de ticket como RECHAZO ni como texto aleatorio.\n- Ejemplos sobre la conversación (memoria del chat): \"¿cuál fue mi pregunta anterior?\", \"¿qué te pregunté antes?\", \"¿cuál fue mi último mensaje?\", \"¿de qué estábamos hablando?\", \"resume nuestra conversación\", \"¿qué me respondiste antes?\".\n- Ejemplos de servicios: \"quiero reciclar\", \"recolección de RAEE\", \"reciclaje de neumáticos\", \"información sobre la empresa\", \"campaña reciclando esperanzas\", \"oficinas de ReVo\".\n\n3. RECHAZO (Temas completamente ajenos):\nClasifica en esta categoría TODO lo que no encaje en las reglas 1 y 2. Esto incluye consultas sobre otras empresas, preguntas del antiguo sistema de Recursos Humanos (vacaciones, banco de horas), cultura general, asistencia matemática, insultos, o texto aleatorio sin sentido.\n- Ejemplos de rechazo: \"¿cuánto es 15 + 30?\", \"¿cómo estará el clima hoy?\", \"quiero pedir una pizza\", \"¿cuántos días de vacaciones tengo?\", \"Manual de ChocolaTech\", \"ayúdame con mi tarea\".\n\nREGLA DE SALIDA ESTRICTA: Responde ÚNICAMENTE con la palabra de la categoría en mayúsculas (SALUDO, INFO_REVO o RECHAZO). No agregues puntos, no agregues espacios en blanco, no incluyas saludos de tu parte, ni des ninguna explicación. Tu salida debe ser una sola palabra limpia."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "id": "afdd98d0-2a19-4e11-8d2a-082f623282a7",
+      "name": "Basic LLM Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        224,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "27c05149-c0cc-4a46-9548-bfd62a46fd13",
+      "name": "Cohere Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatCohere",
+      "typeVersion": 1,
+      "position": [
+        304,
+        832
+      ],
+      "credentials": {
+        "cohereApi": {
+          "id": "weKeIN1l0aEdFkQa",
+          "name": "Cohere account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "INFO_REVO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "e6cd090c-3d0a-4ea4-b3ef-93eb67a5c825"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "934665f1-5c4f-47bb-a185-cd043bafb173",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "SALUDO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "6d74d044-f919-41c4-a40e-8619bfdcb53d",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "RECHAZO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "none"
+        }
+      },
+      "id": "c084728e-6529-4447-9088-0a96809da5c6",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        576,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "options": {
+          "systemMessage": "Eres SofiA, el asistente virtual oficial de ReVo, una empresa líder en soluciones de cumplimiento legal ambiental y economía circular.\n\nREGLAS:\n\n1. Tono y lenguaje: Responde siempre en español. Mantén un tono profesional, ecológico, servicial y amigable.\n2. Alcance de atención: Responde SOLO dudas relacionadas con la empresa ReVo, reciclaje de RAEE (Aparatos Eléctricos y Electrónicos), gestión de neumáticos fuera de uso (NFU), el programa \"Reciclando Esperanzas\", alianzas corporativas, servicios/productos que ofrece ReVo y consultas sobre tickets de soporte. Si detectas un mensaje clasificado como RECHAZO, usa el mensaje de desvío estándar.\n3. Uso de la Base de Conocimientos: Utiliza la información oficial del Vector Store para responder de manera precisa sobre toneladas gestionadas, alianzas (como con Toyota del Perú), dirección de la oficina en Surco y canales de contacto.\n4. Identificación para Solicitudes de Recolección: \n   - Si el usuario manifiesta que desea coordinar o solicitar una recolección de RAEE o neumáticos para su empresa, solicítale amablemente en tu respuesta: Nombre de la empresa, Nombre de contacto y un Correo electrónico.\n   - NO inventes procesos ni confirmes fechas de recolección por tu cuenta; indícales que un asesor comercial se pondrá en contacto con ellos.\n5. Consultas a la base de datos MySQL (herramienta \"run_sql_query\"):\n   Tienes acceso a una base de datos MySQL con, entre otras, estas dos tablas clave. Úsalas SIEMPRE de forma explícita según el tipo de consulta; NO uses SHOW TABLES ni intentes adivinar la tabla:\n\n   a) TICKETS / COTIZACIONES / SOPORTE -> tabla `corporate_quotes`.\n      - Cuando el usuario pregunte por el estado o los detalles de un ticket o cotización, o te proporcione un código/identificador (por ejemplo \"TK-2026-001\"), consulta esta tabla.\n      - Si no conoces todavía los nombres exactos de las columnas, ejecuta primero DESCRIBE `corporate_quotes`; una sola vez para identificar la columna del código del ticket, y luego arma el SELECT. Ejemplo: SELECT * FROM corporate_quotes WHERE <columna_codigo> = \\'TK-2026-001\\';\n      - Si el usuario pregunta de forma general por sus tickets SIN dar un identificador, NO lo rechaces: pídele amablemente el número o ID del ticket (o el correo/nombre asociado).\n\n   b) SERVICIOS / PRODUCTOS que ofrece ReVo -> tabla `products`.\n      - Cuando el usuario pregunte qué servicios o productos ofrece ReVo, sus tipos, categorías, precios o disponibilidad, consulta esta tabla.\n      - Si no conoces todavía los nombres exactos de las columnas, ejecuta primero DESCRIBE `products`; una sola vez, y luego arma el SELECT. Ejemplo: SELECT * FROM products;\n\n   Reglas generales de SQL:\n   - Escribe siempre SQL válido para MySQL. Usa comillas simples para los valores de texto. Para búsquedas parciales puedes usar LIKE con %.\n   - Realiza las consultas de forma silenciosa; solo muéstrale al usuario el resultado final en lenguaje natural, nunca las consultas internas.\n   - Si la consulta no devuelve resultados, informa amablemente que no se encontró información con ese dato y pide que verifique la información.\n   - NO inventes números de ticket, tablas, columnas, servicios ni estados; básate únicamente en lo que devuelva la base de datos."
+        }
+      },
+      "id": "c3d8ad3d-2e17-4770-8546-adc7c90fdaba",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        928,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "444ad49c-f6de-4648-9815-b2150dc291ac",
+      "name": "Cohere Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatCohere",
+      "typeVersion": 1,
+      "position": [
+        800,
+        224
+      ],
+      "credentials": {
+        "cohereApi": {
+          "id": "weKeIN1l0aEdFkQa",
+          "name": "Cohere account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "id": "ed314001-cc5f-4a72-b5bc-62a7143b3e59",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        928,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Busca informaciones sobre RH, asuntos con vacaciones, horarios, etc.",
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        },
+        "topK": 5
+      },
+      "id": "58259d45-0055-401f-a1db-d0983e166c31",
+      "name": "Simple Vector Store",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        1056,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "modelName": "embed-multilingual-v3.0"
+      },
+      "id": "211a3679-275a-4106-b4f7-4014df968c17",
+      "name": "Embeddings Cohere",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsCohere",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        432
+      ],
+      "credentials": {
+        "cohereApi": {
+          "id": "weKeIN1l0aEdFkQa",
+          "name": "Cohere account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('query', `Consulta SQL completa y válida para MySQL. Puedes usar SHOW TABLES para listar las tablas, DESCRIBE <tabla> para ver sus columnas, y SELECT ... WHERE ... para filtrar filas (por ejemplo por el código de un ticket).`, 'string') }}",
+        "options": {}
+      },
+      "id": "9d778b75-9490-4492-9c7f-68198655579d",
+      "name": "run_sql_query",
+      "type": "n8n-nodes-base.mySqlTool",
+      "typeVersion": 2.5,
+      "position": [
+        1280,
+        416
+      ],
+      "credentials": {
+        "mySql": {
+          "id": "Yx4EmcVI99oGbuGB",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "id": "8168d0d1-2b52-4b3b-a9d0-2aeaad9d6c57",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1392,
+        208
+      ],
+      "webhookId": "cd07bcdc-e12d-4202-a3d8-4621ff8234c2",
+      "credentials": {
+        "telegramApi": {
+          "id": "1i0bUJ1lONxtpO7t",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Telegram Trigger\").item.json.message.chat.id }}",
+        "text": "¡Hola! 😊 Soy SofiA, el asistente virtual de ReVo. ♻️ ¿En qué puedo ayudarte hoy respecto a la recolección de aparatos electrónicos (RAEE), reciclaje de neumáticos o nuestros servicios de economía circular?",
+        "additionalFields": {}
+      },
+      "id": "2b3a63c4-5ee5-416b-8a76-6d380588f6b2",
+      "name": "Send a text message1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        992,
+        608
+      ],
+      "webhookId": "00b48061-6311-41a3-9162-9be60ad730c9",
+      "credentials": {
+        "telegramApi": {
+          "id": "1i0bUJ1lONxtpO7t",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $(\"Telegram Trigger\").item.json.message.chat.id }}",
+        "text": "Lo siento, no puedo responder a tu pregunta, ya que mi función es asistir con consultas relacionadas con ReVo, reciclaje de RAEE, gestión de neumáticos fuera de uso, el programa \"Reciclando Esperanzas\" y alianzas corporativas.\n\nSi tienes alguna pregunta sobre estos temas, estaré encantado de ayudarte.",
+        "additionalFields": {}
+      },
+      "id": "eb02ca2a-fa05-473d-9242-56264b7035db",
+      "name": "Send a text message2",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        992,
+        800
+      ],
+      "webhookId": "31264d23-88fd-4c92-ace1-8c13223ae78a",
+      "credentials": {
+        "telegramApi": {
+          "id": "1i0bUJ1lONxtpO7t",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cohere Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cohere Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Cohere": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Simple Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "run_sql_query": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c2971e68-364b-405c-b94d-7ee4bc0a72c5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d65ca5d5676956ec3bdca3047962456121dadb1e2e5c003c4de95439d7abecae"
+  },
+  "nodeGroups": [],
+  "id": "Yw1AvVqLsFNjkEbK",
+  "tags": []
+}
